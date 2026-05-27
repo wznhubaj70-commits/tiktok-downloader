@@ -1,864 +1,374 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WZN Downloader — YouTube, TikTok, Instagram e mais</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:    #0b0814;
-      --card:  rgba(16,13,30,.94);
-      --neon:  #b94fff;
-      --neon2: #7c3aed;
-      --glow:  rgba(185,79,255,.7);
-      --dim:   rgba(185,79,255,.3);
-      --text:  #e8d5ff;
-      --muted: rgba(185,79,255,.42);
-      --ok:    #a3e635;
-      --err:   #f87171;
-    }
-
-    body {
-      background: var(--bg);
-      background-image:
-        radial-gradient(ellipse at 18% 38%, rgba(124,58,237,.13) 0%, transparent 55%),
-        radial-gradient(ellipse at 82% 14%, rgba(185,79,255,.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 55% 88%, rgba(109,40,217,.07) 0%, transparent 44%);
-      min-height: 100vh;
-      font-family: 'Share Tech Mono', monospace;
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 38px 16px 64px;
-    }
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(185,79,255,.027) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(185,79,255,.027) 1px, transparent 1px);
-      background-size: 46px 46px;
-      pointer-events: none; z-index: 0;
-    }
-
-    .z1 { position: relative; z-index: 1; }
-
-    /* ── Typography ── */
-    .neon { color: var(--neon); text-shadow: 0 0 8px var(--glow), 0 0 22px rgba(185,79,255,.38); }
-    .label {
-      display: block; font-size: .62rem; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 7px;
-    }
-
-    /* ── Card ── */
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(185,79,255,.2);
-      box-shadow: 0 0 1px rgba(185,79,255,.25), 0 8px 44px rgba(0,0,0,.72), inset 0 1px 0 rgba(185,79,255,.05);
-      backdrop-filter: blur(18px);
-      border-radius: 16px;
-    }
-
-    /* ── Input ── */
-    .inp {
-      background: rgba(0,0,0,.58);
-      border: 1px solid var(--dim);
-      color: var(--neon); font-family: inherit;
-      border-radius: 10px; padding: 13px 42px 13px 16px;
-      width: 100%; font-size: .85rem; outline: none;
-      transition: border-color .2s, box-shadow .2s;
-    }
-    .inp::placeholder { color: rgba(185,79,255,.26); }
-    .inp:focus { border-color: var(--neon); box-shadow: 0 0 12px rgba(185,79,255,.52), inset 0 0 8px rgba(185,79,255,.05); }
-
-    /* ── Buttons ── */
-    .btn-neon {
-      background: linear-gradient(135deg,#b94fff,#7c3aed);
-      color: #fff; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-      font-family: inherit; border: none; border-radius: 10px; cursor: pointer; font-size: .85rem;
-      transition: all .2s;
-      box-shadow: 0 0 14px rgba(185,79,255,.52), 0 0 28px rgba(124,58,237,.22);
-    }
-    .btn-neon:hover:not(:disabled) { box-shadow: 0 0 22px rgba(185,79,255,.88), 0 0 44px rgba(124,58,237,.42); transform: translateY(-1px); }
-    .btn-neon:active:not(:disabled) { transform: translateY(0); }
-    .btn-neon:disabled { opacity: .36; cursor: not-allowed; }
-
-    .btn-ghost {
-      background: transparent; border: 1px solid var(--dim); color: var(--neon);
-      font-family: inherit; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
-      border-radius: 9px; cursor: pointer; transition: all .18s; white-space: nowrap;
-    }
-    .btn-ghost:hover { border-color: var(--neon); background: rgba(185,79,255,.09); box-shadow: 0 0 10px rgba(185,79,255,.26); }
-
-    .btn-mode {
-      flex: 1; padding: 9px 0; font-family: inherit; font-size: .72rem; letter-spacing: .12em;
-      text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: all .2s;
-      background: transparent; border: 1px solid var(--dim); color: rgba(185,79,255,.55);
-    }
-    .btn-mode.active {
-      background: rgba(185,79,255,.14); border-color: var(--neon); color: var(--neon);
-      box-shadow: 0 0 10px rgba(185,79,255,.3);
-    }
-    .btn-mode:hover:not(.active) { border-color: rgba(185,79,255,.5); color: rgba(185,79,255,.8); }
-
-    .btn-q {
-      background: rgba(185,79,255,.07); border: 1px solid var(--dim);
-      color: var(--text); font-family: inherit; font-size: .78rem; letter-spacing: .08em;
-      text-transform: uppercase; border-radius: 10px; cursor: pointer;
-      transition: all .2s; padding: 13px 0; width: 100%; font-weight: 700;
-    }
-    .btn-q:hover:not(:disabled) { border-color: var(--neon); background: rgba(185,79,255,.16); box-shadow: 0 0 14px rgba(185,79,255,.33); color: var(--neon); }
-    .btn-q:disabled { opacity: .34; cursor: not-allowed; }
-    .btn-q.audio-btn { border-color: rgba(163,230,53,.3); color: rgba(163,230,53,.85); }
-    .btn-q.audio-btn:hover:not(:disabled) { border-color: var(--ok); background: rgba(163,230,53,.1); box-shadow: 0 0 12px rgba(163,230,53,.3); color: var(--ok); }
-
-    /* ── Platform badge ── */
-    .platform-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(185,79,255,.1); border: 1px solid rgba(185,79,255,.25);
-      border-radius: 20px; padding: 4px 12px; font-size: .68rem; letter-spacing: .1em;
-      text-transform: uppercase; color: var(--neon); margin-bottom: 14px;
-      animation: fadeUp .3s ease forwards;
-    }
-    .platform-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 6px var(--neon); animation: blink-dot .9s ease-in-out infinite; }
-
-    /* ── Tag ── */
-    .tag {
-      background: rgba(185,79,255,.09); border: 1px solid rgba(185,79,255,.2);
-      color: var(--neon); font-size: .58rem; letter-spacing: .08em;
-      padding: 2px 8px; border-radius: 3px; display: inline-block;
-    }
-
-    /* ── Supported platforms row ── */
-    .platform-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 28px; }
-    .plat-chip {
-      background: rgba(185,79,255,.06); border: 1px solid rgba(185,79,255,.16);
-      border-radius: 8px; padding: 6px 13px; font-size: .65rem; letter-spacing: .1em;
-      color: rgba(185,79,255,.7); display: flex; align-items: center; gap: 6px;
-      text-transform: uppercase;
-    }
-    .plat-chip .ico { font-size: .9rem; }
-
-    /* ── Status slide ── */
-    .status-box {
-      border: 1px solid rgba(185,79,255,.2); background: rgba(185,79,255,.05);
-      border-radius: 11px; padding: 14px 18px; font-size: .8rem;
-      letter-spacing: .08em; display: flex; align-items: center; gap: 12px;
-    }
-    .sdot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-      background: var(--neon); box-shadow: 0 0 8px var(--neon);
-      animation: blink-dot 1s ease-in-out infinite;
-    }
-    .sdot.ok  { background: var(--ok);  box-shadow: 0 0 8px var(--ok);  animation: none; }
-    .sdot.err { background: var(--err); box-shadow: 0 0 8px var(--err); animation: none; }
-
-    /* ── Progress ── */
-    .prog-track { background: rgba(185,79,255,.09); border: 1px solid rgba(185,79,255,.14); border-radius: 9999px; height: 7px; overflow: hidden; }
-    .prog-fill  { height: 100%; border-radius: 9999px; background: linear-gradient(90deg,#b94fff,#7c3aed); box-shadow: 0 0 8px rgba(185,79,255,.8); transition: width .12s ease; position: relative; overflow: hidden; }
-    .prog-fill::after { content:''; position:absolute; top:0; left:-40%; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent); animation: scan 1.2s linear infinite; }
-
-    /* ── Done banner ── */
-    .done-banner {
-      border: 1px solid rgba(163,230,53,.33); background: rgba(163,230,53,.07);
-      border-radius: 11px; padding: 18px 20px; text-align: center;
-    }
-    .done-title { color: var(--ok); font-size: 1.05rem; letter-spacing: .15em; font-weight: 700; text-shadow: 0 0 10px rgba(163,230,53,.65); margin-bottom: 6px; }
-
-    /* ── Error ── */
-    .err-box {
-      background: rgba(248,113,113,.07); border: 1px solid rgba(248,113,113,.33);
-      border-radius: 10px; padding: 13px 16px; color: var(--err);
-      font-size: .82rem; display: flex; gap: 10px; align-items: flex-start;
-    }
-
-    /* ── Thumb ── */
-    .thumb { border: 1px solid rgba(185,79,255,.3); box-shadow: 0 0 14px rgba(185,79,255,.2); border-radius: 9px; object-fit: cover; width: 80px; height: 80px; flex-shrink: 0; }
-    .thumb.tall { height: 112px; }
-
-    /* ── Photo picker ── */
-    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
-    .photo-item { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; border: 1px solid var(--dim); transition: all .2s; }
-    .photo-item:hover { border-color: var(--neon); box-shadow: 0 0 12px rgba(185,79,255,.4); }
-    .photo-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
-    .photo-item .num { position: absolute; bottom: 4px; right: 6px; background: rgba(0,0,0,.7); color: var(--neon); font-size: .6rem; padding: 1px 5px; border-radius: 3px; }
-
-    /* ── Quality grid ── */
-    .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .q-grid .full { grid-column: 1/-1; }
-    .q-grid .center { grid-column: 1/-1; max-width: 55%; margin: 0 auto; width: 100%; }
-
-    /* ── Divider ── */
-    hr.div { border-color: rgba(185,79,255,.12); margin: 16px 0; }
-
-    /* ── Animations ── */
-    @keyframes scan      { 0%{left:-40%}100%{left:100%} }
-    @keyframes flicker   { 0%,94%,100%{opacity:1}95%{opacity:.7}97%{opacity:.87} }
-    @keyframes blink-dot { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.78)} }
-    @keyframes pulse-n   { 0%,100%{opacity:1}50%{opacity:.45} }
-    @keyframes fadeUp    { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
-    @keyframes blink-cur { 0%,49%{opacity:1}50%,100%{opacity:0} }
-
-    .flicker   { animation: flicker 4.5s linear infinite; }
-    .pulse-n   { animation: pulse-n 1.3s ease-in-out infinite; }
-    .fade-up   { animation: fadeUp .38s ease forwards; }
-    .cursor::after { content:'_'; animation: blink-cur 1s step-start infinite; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TTK DOWNLOADER — Baixar TikTok sem marca d'água</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0e0b1a;--surface:#16112a;--card:#1c1535;
+--border:rgba(139,92,246,.25);--neon:#a855f7;--neon2:#7c3aed;
+--glow:rgba(168,85,247,.6);--text:#ede9fe;--muted:#7c6fa0;
+--ok:#4ade80;--err:#f87171;
+}
+body{
+background:var(--bg);
+background-image:radial-gradient(ellipse at 20% 30%,rgba(124,58,237,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 70%,rgba(168,85,247,.08) 0%,transparent 45%);
+min-height:100vh;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+color:var(--text);display:flex;flex-direction:column;align-items:center;
+}
+body::before{
+content:'';position:fixed;inset:0;
+background-image:linear-gradient(rgba(139,92,246,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.03) 1px,transparent 1px);
+background-size:48px 48px;pointer-events:none;z-index:0;
+}
+.page{position:relative;z-index:1;width:100%;max-width:680px;padding:0 20px 80px}
+.header{padding:48px 0 36px;text-align:center}
+.logo{
+font-size:clamp(2.4rem,8vw,3.8rem);font-weight:900;letter-spacing:-.02em;
+background:linear-gradient(135deg,#a855f7,#7c3aed,#c084fc);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 20px rgba(168,85,247,.5));
+}
+.tagline{margin-top:8px;font-size:.85rem;color:var(--muted);letter-spacing:.04em}
+.platform-chips{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+.chip{background:rgba(139,92,246,.1);border:1px solid var(--border);border-radius:20px;padding:4px 13px;font-size:.72rem;color:rgba(168,85,247,.8);letter-spacing:.04em}
+.search-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 4px 32px rgba(0,0,0,.4),inset 0 1px 0 rgba(168,85,247,.06);margin-bottom:20px}
+.search-label{font-size:.72rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.input-row{display:flex;gap:10px}
+.url-wrap{flex:1;position:relative}
+.url-inp{width:100%;background:rgba(0,0,0,.4);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;padding:13px 42px 13px 16px;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.url-inp::placeholder{color:rgba(168,85,247,.3)}
+.url-inp:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(168,85,247,.15)}
+.clear-btn{display:none;position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0;line-height:1;transition:color .15s}
+.clear-btn:hover{color:var(--text)}
+.paste-btn{background:rgba(139,92,246,.15);border:1.5px solid var(--border);border-radius:10px;color:var(--neon);font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:0 18px;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit}
+.paste-btn:hover{background:rgba(139,92,246,.25);border-color:var(--neon);box-shadow:0 0 12px rgba(168,85,247,.25)}
+.download-btn{width:100%;margin-top:14px;padding:15px;background:linear-gradient(135deg,#a855f7,#7c3aed);border:none;border-radius:10px;color:#fff;font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(168,85,247,.45);font-family:inherit}
+.download-btn:hover:not(:disabled){box-shadow:0 6px 28px rgba(168,85,247,.7);transform:translateY(-1px)}
+.download-btn:active:not(:disabled){transform:translateY(0)}
+.download-btn:disabled{opacity:.45;cursor:not-allowed}
+.status-wrap{margin-bottom:16px}
+.status-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;font-size:.88rem;color:var(--text)}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--neon);box-shadow:0 0 10px var(--neon);animation:pulse-dot .9s ease-in-out infinite}
+.status-dot.ok{background:var(--ok);box-shadow:0 0 10px var(--ok);animation:none}
+.status-dot.err{background:var(--err);box-shadow:0 0 10px var(--err);animation:none}
+.error-card{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:12px;padding:14px 18px;color:var(--err);font-size:.88rem;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px}
+.error-label{font-weight:700;font-size:.72rem;letter-spacing:.1em;flex-shrink:0;padding-top:1px}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.4)}
+.thumb-banner{position:relative;width:100%;background:#000;display:flex;justify-content:center}
+.thumb-banner img{width:100%;max-height:320px;object-fit:cover;display:block;opacity:.85}
+.thumb-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(14,11,26,.95) 100%)}
+.thumb-meta{position:absolute;bottom:16px;left:20px;right:20px}
+.thumb-author{font-size:.8rem;color:rgba(255,255,255,.65);margin-bottom:4px}
+.thumb-title{font-size:1rem;font-weight:700;color:#fff;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.stats-row{display:flex;gap:20px;padding:14px 20px;border-bottom:1px solid rgba(139,92,246,.12);flex-wrap:wrap}
+.stat{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted)}
+.stat span{color:var(--text);font-weight:600}
+.no-thumb{padding:20px;display:flex;gap:16px}
+.no-thumb-icon{width:70px;height:70px;background:rgba(139,92,246,.15);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0}
+.no-thumb-info{flex:1}
+.no-thumb-title{font-size:.95rem;font-weight:600;line-height:1.4;margin-bottom:6px}
+.no-thumb-author{font-size:.8rem;color:var(--muted)}
+.dl-section{padding:20px}
+.dl-section-label{font-size:.72rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.btn-grid{display:grid;gap:10px}
+.btn-grid.cols-2{grid-template-columns:1fr 1fr}
+.btn-grid.cols-1{grid-template-columns:1fr}
+.dl-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;font-size:.85rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:all .2s;border:none;font-family:inherit;text-transform:uppercase}
+.dl-btn:disabled{opacity:.35;cursor:not-allowed}
+.dl-btn.primary{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;box-shadow:0 3px 16px rgba(168,85,247,.4)}
+.dl-btn.primary:hover:not(:disabled){box-shadow:0 6px 24px rgba(168,85,247,.65);transform:translateY(-1px)}
+.dl-btn.secondary{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.3);color:var(--text)}
+.dl-btn.secondary:hover:not(:disabled){background:rgba(139,92,246,.22);border-color:var(--neon);box-shadow:0 0 14px rgba(168,85,247,.25)}
+.dl-btn.audio{background:rgba(74,222,128,.1);border:1.5px solid rgba(74,222,128,.3);color:var(--ok)}
+.dl-btn.audio:hover:not(:disabled){background:rgba(74,222,128,.18);border-color:var(--ok);box-shadow:0 0 14px rgba(74,222,128,.25)}
+.dl-btn.full{grid-column:1/-1}
+.btn-icon{font-size:1.1rem}
+.btn-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
+.btn-text small{font-weight:400;font-size:.68rem;opacity:.7;text-transform:none;letter-spacing:0}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.photo-item{position:relative;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);cursor:pointer;transition:all .2s}
+.photo-item:hover{border-color:var(--neon);box-shadow:0 0 14px rgba(168,85,247,.4);transform:scale(1.02)}
+.photo-item img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.photo-num{position:absolute;bottom:5px;right:6px;background:rgba(0,0,0,.75);color:var(--neon);font-size:.62rem;padding:1px 6px;border-radius:4px;font-weight:700}
+.dl-all-btn{margin-top:10px;width:100%;padding:13px;background:linear-gradient(135deg,#a855f7,#7c3aed);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:.85rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all .2s;box-shadow:0 3px 16px rgba(168,85,247,.35);font-family:inherit}
+.dl-all-btn:hover{box-shadow:0 6px 24px rgba(168,85,247,.6);transform:translateY(-1px)}
+.prog-wrap{margin-top:14px;padding:14px 16px;background:rgba(139,92,246,.08);border:1px solid var(--border);border-radius:10px}
+.prog-meta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:8px}
+.prog-track{background:rgba(139,92,246,.15);border-radius:9999px;height:6px;overflow:hidden}
+.prog-fill{height:100%;border-radius:9999px;background:linear-gradient(90deg,#a855f7,#7c3aed);box-shadow:0 0 8px rgba(168,85,247,.7);transition:width .1s ease;position:relative;overflow:hidden}
+.prog-fill::after{content:'';position:absolute;top:0;left:-50%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:scan 1s linear infinite}
+.done-banner{margin-top:14px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:12px;padding:18px 20px;text-align:center}
+.done-title{color:var(--ok);font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.done-sub{color:rgba(74,222,128,.6);font-size:.8rem;margin-bottom:14px}
+.done-reset{background:transparent;border:1.5px solid rgba(74,222,128,.35);border-radius:8px;color:var(--ok);font-size:.8rem;font-weight:600;padding:8px 22px;cursor:pointer;transition:all .2s;font-family:inherit}
+.done-reset:hover{background:rgba(74,222,128,.1);border-color:var(--ok)}
+.footer{margin-top:40px;padding-bottom:20px;text-align:center;font-size:.7rem;color:rgba(139,92,246,.35);letter-spacing:.06em}
+.hidden{display:none!important}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+@keyframes scan{0%{left:-50%}100%{left:100%}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-up{animation:fadeUp .35s ease forwards}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@media(max-width:480px){.btn-grid.cols-2{grid-template-columns:1fr}.btn-text{align-items:center}}
+</style>
 </head>
 <body>
-
-  <!-- ══ HEADER ══ -->
-  <header class="z1 text-center" style="margin-bottom:28px;">
-    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:10px;">
-      <span class="tag">v1.0</span>
-      <span class="tag">UNIVERSAL</span>
-      <span class="tag">SEM MARCA D'ÁGUA</span>
-    </div>
-    <h1 class="neon flicker" style="font-size:clamp(2rem,9vw,3.2rem);font-weight:900;letter-spacing:-.01em;">
-      WZN<span style="color:rgba(255,255,255,.42);">_</span>DL
-    </h1>
-    <p style="color:var(--muted);font-size:.67rem;letter-spacing:.28em;text-transform:uppercase;margin-top:6px;">
-      ▸ downloader universal — sem marca d'água ◂
-    </p>
-  </header>
-
-  <!-- ══ PLATFORM CHIPS ══ -->
-  <div class="z1 platform-row">
-    <div class="plat-chip"><span class="ico">▶</span> YouTube</div>
-    <div class="plat-chip"><span class="ico">♪</span> TikTok</div>
-    <div class="plat-chip"><span class="ico">◈</span> Instagram</div>
-    <div class="plat-chip"><span class="ico">✦</span> Twitter / X</div>
-    <div class="plat-chip"><span class="ico">◉</span> Reddit</div>
-    <div class="plat-chip"><span class="ico">+20</span> outros</div>
-  </div>
-
-  <!-- ══ MAIN CARD ══ -->
-  <main class="z1 card" style="width:100%;max-width:580px;padding:26px;">
-
-    <!-- Platform badge (aparece quando detecta URL) -->
-    <div id="plat-badge" style="display:none;"></div>
-
-    <!-- URL Input -->
-    <div style="margin-bottom:14px;">
-      <label class="label">// Cole o link aqui</label>
-      <div style="display:flex;gap:8px;">
-        <div style="flex:1;position:relative;">
-          <input id="url-input" type="url" class="inp"
-            placeholder="YouTube, TikTok, Instagram, Twitter..." autocomplete="off" spellcheck="false" />
-          <button id="clear-btn" onclick="clearInput()"
-            style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;padding:0;">×</button>
-        </div>
-        <button class="btn-ghost" style="padding:0 14px;" onclick="pasteUrl()">COLAR</button>
-      </div>
-    </div>
-
-    <!-- Modo: Vídeo / Áudio (mostra só para plataformas que suportam áudio) -->
-    <div id="mode-row" style="display:none;margin-bottom:14px;">
-      <label class="label">// Modo</label>
-      <div style="display:flex;gap:8px;">
-        <button id="mode-video" class="btn-mode active" onclick="setMode('video')">🎬 Vídeo</button>
-        <button id="mode-audio" class="btn-mode" onclick="setMode('audio')">🎵 Só Áudio (MP3)</button>
-      </div>
-    </div>
-
-    <!-- Qualidade: mostra para vídeo -->
-    <div id="quality-row" style="display:none;margin-bottom:14px;">
-      <label class="label">// Qualidade de vídeo</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button id="q-max"  class="btn-mode active" onclick="setQuality('max')">MAX</button>
-        <button id="q-1080" class="btn-mode" onclick="setQuality('1080')">FHD 1080p</button>
-        <button id="q-720"  class="btn-mode" onclick="setQuality('720')">HD 720p</button>
-        <button id="q-480"  class="btn-mode" onclick="setQuality('480')">SD 480p</button>
-        <button id="q-360"  class="btn-mode" onclick="setQuality('360')">360p</button>
-      </div>
-    </div>
-
-    <!-- BAIXAR -->
-    <button id="baixar-btn" class="btn-neon" style="width:100%;padding:14px;" onclick="iniciarDownload()">
-      BAIXAR
-    </button>
-
-    <!-- Status -->
-    <div id="status-area" style="display:none;margin-top:14px;">
-      <div class="status-box">
-        <div id="sdot" class="sdot"></div>
-        <span id="status-txt" class="cursor">CONECTANDO</span>
-      </div>
-    </div>
-
-    <!-- Error -->
-    <div id="err-box" style="display:none;margin-top:12px;" class="err-box">
-      <span style="font-weight:700;font-size:.7rem;letter-spacing:.1em;flex-shrink:0;">ERRO</span>
-      <span id="err-msg"></span>
-    </div>
-
-    <!-- Result -->
-    <div id="result-card" style="display:none;">
-      <hr class="div" />
-
-      <!-- Info da mídia -->
-      <div id="media-info" style="display:flex;gap:14px;margin-bottom:16px;"></div>
-
-      <!-- Progresso -->
-      <div id="prog-area" style="display:none;margin-top:4px;margin-bottom:14px;">
-        <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);margin-bottom:5px;letter-spacing:.08em;">
-          <span id="prog-lbl">BAIXANDO...</span>
-          <span id="prog-pct">0%</span>
-        </div>
-        <div class="prog-track"><div id="prog-fill" class="prog-fill" style="width:0%"></div></div>
-      </div>
-
-      <!-- Opções de download -->
-      <div id="dl-opts"></div>
-
-      <!-- Done banner -->
-      <div id="done-banner" style="display:none;margin-top:14px;" class="done-banner fade-up">
-        <div class="done-title">✓ PRONTO! BAIXANDO ARQUIVO!</div>
-        <div style="color:rgba(163,230,53,.62);font-size:.72rem;letter-spacing:.1em;margin-bottom:12px;">
-          O download foi iniciado. Verifique sua pasta de downloads.
-        </div>
-        <button class="btn-ghost" style="padding:7px 20px;" onclick="resetParaNovo()">↩ BAIXAR OUTRO</button>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="z1" style="margin-top:24px;text-align:center;">
-    <p style="color:rgba(185,79,255,.25);font-size:.62rem;letter-spacing:.1em;">
-      POWERED BY COBALT &bull; TIKWM &bull; SEM MARCA D'ÁGUA &bull; GRATUITO
-    </p>
-    <p style="color:rgba(185,79,255,.15);font-size:.58rem;margin-top:4px;">
-      Apenas para uso pessoal. Respeite os criadores de conteúdo.
-    </p>
-  </footer>
-
-  <script>
-    // ════════════════════════════════════════════════════════════
-    //  APIs
-    // ════════════════════════════════════════════════════════════
-    const COBALT_INSTANCES = [
-      'https://api.cobalt.tools',
-      'https://cobalt.api.timelessnesses.me',
-      'https://cobalt.lunar.icu',
-    ];
-    const TIKWM = 'https://www.tikwm.com/api/';
-
-    // ════════════════════════════════════════════════════════════
-    //  Estado
-    // ════════════════════════════════════════════════════════════
-    let mode     = 'video';   // 'video' | 'audio'
-    let quality  = 'max';     // 'max' | '1080' | '720' | '480' | '360'
-    let platform = null;      // plataforma detectada
-    let baixando = false;
-    let progTimer= null;
-
-    // ════════════════════════════════════════════════════════════
-    //  DOM helpers
-    // ════════════════════════════════════════════════════════════
-    const $ = id => document.getElementById(id);
-    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-    function esc(s) { return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-
-    // ════════════════════════════════════════════════════════════
-    //  Input
-    // ════════════════════════════════════════════════════════════
-    $('url-input').addEventListener('input', onUrlChange);
-    $('url-input').addEventListener('keydown', e => { if(e.key==='Enter') iniciarDownload(); });
-
-    function onUrlChange() {
-      const v = $('url-input').value.trim();
-      $('clear-btn').style.display = v ? 'block' : 'none';
-      resetUI(false);
-      if (v) detectarPlataforma(v);
-    }
-
-    function clearInput() {
-      $('url-input').value = '';
-      $('clear-btn').style.display = 'none';
-      resetUI(true);
-    }
-
-    async function pasteUrl() {
-      try {
-        const t = await navigator.clipboard.readText();
-        $('url-input').value = t.trim();
-        onUrlChange();
-      } catch {
-        $('url-input').focus();
-      }
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  Detecção de plataforma
-    // ════════════════════════════════════════════════════════════
-    const PLATFORMS = [
-      { id:'youtube',   label:'YouTube',   icon:'▶', color:'#ff0000', re: /youtube\.com|youtu\.be/ },
-      { id:'tiktok',    label:'TikTok',    icon:'♪', color:'#69c9d0', re: /tiktok\.com/ },
-      { id:'instagram', label:'Instagram', icon:'◈', color:'#e1306c', re: /instagram\.com/ },
-      { id:'twitter',   label:'Twitter/X', icon:'✦', color:'#1d9bf0', re: /twitter\.com|x\.com/ },
-      { id:'reddit',    label:'Reddit',    icon:'◉', color:'#ff4500', re: /reddit\.com|redd\.it/ },
-      { id:'pinterest', label:'Pinterest', icon:'⊕', color:'#e60023', re: /pinterest\.com|pin\.it/ },
-      { id:'twitch',    label:'Twitch',    icon:'⬡', color:'#9146ff', re: /twitch\.tv/ },
-      { id:'soundcloud',label:'SoundCloud',icon:'◎', color:'#ff5500', re: /soundcloud\.com/ },
-      { id:'vimeo',     label:'Vimeo',     icon:'◐', color:'#1ab7ea', re: /vimeo\.com/ },
-    ];
-
-    // Plataformas que suportam modo áudio
-    const AUDIO_PLATFORMS = ['youtube','tiktok','twitter','reddit','soundcloud','twitch','vimeo'];
-    // Plataformas que suportam seleção de qualidade de vídeo
-    const QUALITY_PLATFORMS = ['youtube','vimeo','twitch'];
-
-    function detectarPlataforma(url) {
-      const p = PLATFORMS.find(p => p.re.test(url)) || { id:'outros', label:'Outros', icon:'★', color:'var(--neon)' };
-      platform = p.id;
-
-      // Badge
-      const badge = $('plat-badge');
-      badge.innerHTML = `<div class="platform-badge"><div class="dot"></div>${p.icon} ${p.label} detectado</div>`;
-      badge.style.display = 'block';
-
-      // Mostrar/ocultar modo áudio
-      $('mode-row').style.display = AUDIO_PLATFORMS.includes(p.id) ? 'block' : 'none';
-
-      // Mostrar/ocultar qualidade
-      $('quality-row').style.display = QUALITY_PLATFORMS.includes(p.id) && mode === 'video' ? 'block' : 'none';
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  Modo & Qualidade
-    // ════════════════════════════════════════════════════════════
-    function setMode(m) {
-      mode = m;
-      $('mode-video').classList.toggle('active', m==='video');
-      $('mode-audio').classList.toggle('active', m==='audio');
-      $('quality-row').style.display = (m==='video' && QUALITY_PLATFORMS.includes(platform)) ? 'block' : 'none';
-    }
-
-    function setQuality(q) {
-      quality = q;
-      ['max','1080','720','480','360'].forEach(k => {
-        $('q-'+k)?.classList.toggle('active', k===q);
-      });
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  Reset UI
-    // ════════════════════════════════════════════════════════════
-    function resetUI(full=false) {
-      hideError();
-      $('status-area').style.display  = 'none';
-      $('result-card').style.display  = 'none';
-      $('prog-area').style.display    = 'none';
-      $('done-banner').style.display  = 'none';
-      if (full) {
-        $('plat-badge').style.display = 'none';
-        $('mode-row').style.display   = 'none';
-        $('quality-row').style.display = 'none';
-        platform = null;
-      }
-    }
-
-    function showError(msg) { $('err-msg').textContent=msg; $('err-box').style.display='flex'; }
-    function hideError()    { $('err-box').style.display='none'; }
-
-    function setStatus(txt, tipo='loading') {
-      $('status-area').style.display='block';
-      $('status-txt').textContent=txt;
-      $('status-txt').classList.toggle('cursor', tipo==='loading');
-      $('sdot').className='sdot'+(tipo==='ok'?' ok':tipo==='err'?' err':'');
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  BAIXAR — ponto de entrada
-    // ════════════════════════════════════════════════════════════
-    async function iniciarDownload() {
-      const url = $('url-input').value.trim();
-      if (!url) { showError('Cole um link válido para continuar.'); return; }
-
-      hideError();
-      $('result-card').style.display = 'none';
-      $('baixar-btn').disabled = true;
-      $('baixar-btn').innerHTML = '<span class="pulse-n">ANALISANDO...</span>';
-
-      // Anima slides
-      setStatus('CONECTANDO API');
-      await sleep(500);
-      setStatus('IDENTIFICANDO PLATAFORMA');
-      await sleep(500);
-      setStatus('BUSCANDO CONTEÚDO');
-
-      try {
-        let resultado = null;
-
-        // TikTok → usa TikWM (mais confiável para TikTok)
-        if (platform === 'tiktok') {
-          resultado = await buscarTikWM(url);
-        } else {
-          // Todos os outros → Cobalt
-          resultado = await buscarCobalt(url);
-        }
-
-        if (!resultado) throw new Error('Nenhum resultado retornado pela API.');
-
-        setStatus('CONTEÚDO ENCONTRADO ✓', 'ok');
-        renderResultado(resultado, url);
-
-      } catch (err) {
-        setStatus('FALHA NA REQUISIÇÃO', 'err');
-        const msg = err.message || '';
-        if (msg.includes('fetch') || msg.includes('network') || msg.includes('Failed')) {
-          showError('Erro de rede. Verifique sua conexão ou tente novamente em instantes.');
-        } else {
-          showError(msg || 'Não foi possível processar esse link. Tente outro ou aguarde.');
-        }
-      } finally {
-        $('baixar-btn').disabled = false;
-        $('baixar-btn').textContent = 'BAIXAR';
-      }
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  API: TikWM (TikTok)
-    // ════════════════════════════════════════════════════════════
-    async function buscarTikWM(url) {
-      const params = new URLSearchParams({ url, hd: '1' });
-      const resp = await fetch(`${TIKWM}?${params}`, { headers: { Accept:'application/json' } });
-      if (!resp.ok) throw new Error(`TikWM HTTP ${resp.status}`);
-      const json = await resp.json();
-      if (json.code !== 0 || !json.data) throw new Error(json.msg || 'TikWM não encontrou o vídeo.');
-
-      const d = json.data;
-      const hasImages = Array.isArray(d.images) && d.images.length > 0;
-      let tipo = 'video';
-      if (hasImages) tipo = 'photo';
-      else if (!d.play && (d.music_info?.play || d.music)) tipo = 'audio-only';
-
-      return {
-        api: 'tikwm', tipo,
-        title  : (d.title||'').split('#')[0].trim() || 'TikTok Video',
-        author : '@' + (d.author?.nickname || 'TikTok'),
-        thumb  : d.cover || '',
-        duration: d.duration || 0,
-        width  : d.width || 0, height: d.height || 0,
-        urls: tipo === 'photo'
-          ? d.images.map((u,i) => ({ label:`Foto ${i+1}`, url: u, nome:`tiktok_foto_${i+1}.jpg`, thumb: u }))
-          : tipo === 'audio-only'
-          ? [{ label:'Áudio MP3', url: d.music_info?.play||d.music, nome:'tiktok_audio.mp3' }]
-          : [
-              { label:'📺 MP4 FHD', url: d.hdplay||d.play, nome:'tiktok_fhd.mp4' },
-              { label:'🎬 MP4 HD',  url: d.hdplay||d.play, nome:'tiktok_hd.mp4'  },
-              { label:'📱 MP4 SD',  url: d.play,           nome:'tiktok_sd.mp4'  },
-            ],
-        musicUrl: d.music_info?.play || d.music || '',
-      };
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  API: Cobalt (tudo mais)
-    // ════════════════════════════════════════════════════════════
-    async function buscarCobalt(url) {
-      const body = {
-        url,
-        videoQuality   : mode === 'audio' ? '360' : quality === 'max' ? '9999' : quality,
-        audioFormat    : 'mp3',
-        downloadMode   : mode === 'audio' ? 'audio' : 'auto',
-        filenameStyle  : 'pretty',
-      };
-
-      let lastErr = null;
-      for (const base of COBALT_INSTANCES) {
-        try {
-          const resp = await fetch(base + '/', {
-            method : 'POST',
-            headers: { 'Content-Type':'application/json', Accept:'application/json' },
-            body   : JSON.stringify(body),
-            signal : AbortSignal.timeout(12000),
-          });
-          const json = await resp.json();
-
-          // Cobalt: erro
-          if (json.error) {
-            throw new Error(cobaltErrMsg(json.error?.code));
-          }
-
-          // Cobalt: stream ou redirect → download direto
-          if (json.status === 'stream' || json.status === 'redirect' || json.status === 'tunnel') {
-            const ext  = mode === 'audio' ? 'mp3' : 'mp4';
-            const nome = json.filename || `wzn_download.${ext}`;
-            return {
-              api:'cobalt', tipo: mode==='audio' ? 'audio-only' : 'video',
-              title : extrairTitulo(url), author:'', thumb:'',
-              urls: [{ label: mode==='audio' ? '🎵 Baixar MP3' : '⬇ Baixar Arquivo', url: json.url, nome }],
-            };
-          }
-
-          // Cobalt: picker (carrossel de fotos/vídeos)
-          if (json.status === 'picker') {
-            return {
-              api:'cobalt', tipo:'photo',
-              title : extrairTitulo(url), author:'', thumb: json.picker?.[0]?.thumb || '',
-              urls  : (json.picker||[]).map((p,i) => ({
-                label: `${p.type === 'photo' ? '🖼️' : '🎬'} Item ${i+1}`,
-                url  : p.url,
-                nome : `wzn_${p.type}_${i+1}.${p.type==='photo'?'jpg':'mp4'}`,
-                thumb: p.thumb || '',
-              })),
-            };
-          }
-
-          throw new Error('Resposta inesperada da API.');
-
-        } catch(e) {
-          lastErr = e;
-          // Tenta próxima instância se for erro de rede/timeout
-          if (e instanceof TypeError || e.name === 'AbortError') continue;
-          throw e; // Erro da API → não tenta outra instância
-        }
-      }
-      throw lastErr || new Error('Todas as instâncias da API falharam.');
-    }
-
-    function cobaltErrMsg(code) {
-      const map = {
-        'error.api.unreachable'           : 'API fora do ar. Tente novamente.',
-        'error.api.fetch.fail'            : 'Não foi possível buscar o conteúdo. O link pode ser privado.',
-        'error.api.link.invalid'          : 'Link inválido. Verifique e tente novamente.',
-        'error.api.link.unsupported'      : 'Esta plataforma não é suportada no momento.',
-        'error.api.content.unavailable'   : 'Conteúdo indisponível ou privado.',
-        'error.api.fetch.rate'            : 'Muitas requisições. Aguarde alguns segundos.',
-        'error.api.youtube.login'         : 'Este vídeo do YouTube requer login.',
-        'error.api.youtube.age'           : 'Vídeo restrito por idade no YouTube.',
-        'error.api.youtube.region'        : 'Vídeo bloqueado por região.',
-      };
-      return map[code] || `Erro da API: ${code||'desconhecido'}`;
-    }
-
-    function extrairTitulo(url) {
-      try {
-        const u = new URL(url);
-        return u.hostname.replace('www.','') + u.pathname.slice(0,30);
-      } catch { return 'Conteúdo'; }
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  Renderizar card de resultado
-    // ════════════════════════════════════════════════════════════
-    function renderResultado(d, rawUrl) {
-      // Info header
-      const hasThumb = Boolean(d.thumb);
-      const infoHtml = `
-        ${hasThumb ? `<img src="${d.thumb}" class="thumb${d.tipo!=='photo'?' tall':''}" alt="capa" />` : ''}
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
-            ${tipoTag(d.tipo)}
-            ${d.author ? `<span class="tag">${d.author}</span>` : ''}
-            ${d.duration ? `<span class="tag">${fmtDur(d.duration)}</span>` : ''}
-            ${d.width ? `<span class="tag">${d.width}×${d.height}</span>` : ''}
-          </div>
-          <p style="font-size:.8rem;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--text);">
-            ${d.title || extrairTitulo(rawUrl)}
-          </p>
-        </div>`;
-      $('media-info').innerHTML = infoHtml;
-
-      // Opções de download
-      renderOpcoes(d);
-
-      $('prog-area').style.display   = 'none';
-      $('done-banner').style.display = 'none';
-      $('result-card').style.display = 'block';
-      $('result-card').classList.remove('fade-up');
-      void $('result-card').offsetWidth;
-      $('result-card').classList.add('fade-up');
-    }
-
-    function tipoTag(tipo) {
-      const map = { video:'🎬 VÍDEO', photo:'🖼️ FOTO / CARROSSEL', 'audio-only':'🎵 ÁUDIO' };
-      return `<span class="tag">${map[tipo]||tipo.toUpperCase()}</span>`;
-    }
-
-    function fmtDur(s) { return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
-
-    function renderOpcoes(d) {
-      const opts = $('dl-opts');
-      opts.innerHTML = '';
-
-      if (d.tipo === 'photo' || d.tipo === 'video' && d.urls.length > 1) {
-        // Grade de botões
-        const grid = document.createElement('div');
-
-        if (d.tipo === 'photo' && d.urls.length > 1) {
-          // Picker visual de fotos
-          const label = document.createElement('div');
-          label.className = 'label'; label.style.marginBottom = '10px';
-          label.textContent = `// ${d.urls.length} itens para baixar`;
-          opts.appendChild(label);
-
-          const pg = document.createElement('div');
-          pg.className = 'photo-grid';
-          d.urls.forEach((item, i) => {
-            const el = document.createElement('div');
-            el.className = 'photo-item';
-            el.innerHTML = item.thumb
-              ? `<img src="${item.thumb}" loading="lazy" /><div class="num">${i+1}</div>`
-              : `<div style="width:100%;aspect-ratio:1;background:rgba(185,79,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;">${item.label.slice(0,2)}</div><div class="num">${i+1}</div>`;
-            el.onclick = () => baixarArquivo(item.url, item.nome, item.label);
-            opts.appendChild(el); // add directly to opts below
-            pg.appendChild(el);
-          });
-          opts.innerHTML = '';
-          opts.appendChild(label);
-          opts.appendChild(pg);
-
-          // Botão "Baixar tudo"
-          if (d.urls.length > 1) {
-            const btnAll = document.createElement('button');
-            btnAll.className = 'btn-q'; btnAll.style.marginTop = '10px'; btnAll.style.width = '100%';
-            btnAll.textContent = `⬇ BAIXAR TUDO (${d.urls.length} ITENS)`;
-            btnAll.onclick = () => baixarTudo(d.urls);
-            opts.appendChild(btnAll);
-          }
-
-        } else {
-          // Botões de qualidade para vídeo
-          const label = document.createElement('div');
-          label.className = 'label'; label.style.marginBottom = '10px';
-          label.textContent = '// Escolha a qualidade';
-          opts.appendChild(label);
-
-          const qg = document.createElement('div');
-          qg.className = 'q-grid';
-
-          d.urls.forEach((item, i) => {
-            const wrap = document.createElement('div');
-            if (d.urls.length === 3 && i === 2) wrap.className = 'center';
-            if (d.urls.length === 1) wrap.className = 'full';
-            const btn = document.createElement('button');
-            btn.className = 'btn-q' + (item.nome?.endsWith('.mp3') ? ' audio-btn' : '');
-            btn.textContent = item.label;
-            btn.onclick = () => baixarArquivo(item.url, item.nome, item.label);
-            wrap.appendChild(btn); qg.appendChild(wrap);
-          });
-          opts.appendChild(qg);
-
-          // Áudio extra para TikTok
-          if (d.api === 'tikwm' && d.musicUrl && d.tipo === 'video') {
-            const sep = document.createElement('hr'); sep.className = 'div'; sep.style.margin='12px 0';
-            opts.appendChild(sep);
-            const btnAud = document.createElement('button');
-            btnAud.className = 'btn-q audio-btn'; btnAud.style.width='100%';
-            btnAud.textContent = '🎵 Baixar só o Áudio / Som';
-            btnAud.onclick = () => baixarArquivo(d.musicUrl, 'tiktok_audio.mp3', 'Áudio');
-            opts.appendChild(btnAud);
-          }
-        }
-
-      } else {
-        // Um único botão
-        d.urls.forEach(item => {
-          const btn = document.createElement('button');
-          btn.className = 'btn-q' + (item.nome?.endsWith('.mp3') ? ' audio-btn' : '');
-          btn.style.cssText = 'width:100%;';
-          btn.textContent = item.label;
-          btn.onclick = () => baixarArquivo(item.url, item.nome, item.label);
-          opts.appendChild(btn);
-        });
-      }
-    }
-
-    // ════════════════════════════════════════════════════════════
-    //  Download de arquivo
-    // ════════════════════════════════════════════════════════════
-    async function baixarArquivo(url, nome, label) {
-      if (baixando || !url) return;
-      baixando = true;
-
-      $('dl-opts').querySelectorAll('button').forEach(b => b.disabled = true);
-      $('done-banner').style.display = 'none';
-      $('prog-area').style.display   = 'block';
-      $('prog-fill').style.width     = '0%';
-      $('prog-pct').textContent      = '0%';
-      $('prog-lbl').textContent      = `BAIXANDO ${(label||'').toUpperCase()}...`;
-
-      let fake = 0;
-      if (progTimer) clearInterval(progTimer);
-      progTimer = setInterval(() => {
-        fake = Math.min(fake + Math.random()*9+2, 88);
-        $('prog-fill').style.width = Math.round(fake)+'%';
-        $('prog-pct').textContent  = Math.round(fake)+'%';
-      }, 200);
-
-      let ok = false;
-
-      // Tentativa 1: fetch → blob (melhor experiência)
-      try {
-        const r = await fetch(url, { mode: 'cors' });
-        if (!r.ok) throw new Error(`${r.status}`);
-        const blob = await r.blob();
-        const obj  = URL.createObjectURL(blob);
-        dispararDownload(obj, nome);
-        setTimeout(()=>URL.revokeObjectURL(obj), 8000);
-        ok = true;
-      } catch {
-        // Tentativa 2: link direto
-        try {
-          dispararDownload(url, nome);
-          ok = true;
-        } catch {
-          window.open(url, '_blank', 'noopener,noreferrer');
-          ok = true;
-        }
-      }
-
-      clearInterval(progTimer);
-
-      if (ok) {
-        $('prog-fill').style.width = '100%';
-        $('prog-pct').textContent  = '100%';
-        $('prog-lbl').textContent  = 'CONCLUÍDO';
-        showDone();
-      } else {
-        $('prog-area').style.display = 'none';
-        showError('Falha no download. Tente novamente.');
-        $('dl-opts').querySelectorAll('button').forEach(b => b.disabled = false);
-      }
-
-      baixando = false;
-    }
-
-    // Baixar tudo em sequência (com delay entre cada)
-    async function baixarTudo(urls) {
-      for (const item of urls) {
-        dispararDownload(item.url, item.nome);
-        await sleep(800);
-      }
-      showDone();
-    }
-
-    function dispararDownload(href, nome) {
-      const a = document.createElement('a');
-      a.href = href; a.download = nome||'wzn_download'; a.target='_blank'; a.rel='noopener noreferrer';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }
-
-    function showDone() {
-      $('done-banner').style.display = 'block';
-      $('done-banner').classList.remove('fade-up');
-      void $('done-banner').offsetWidth;
-      $('done-banner').classList.add('fade-up');
-    }
-
-    function resetParaNovo() {
-      clearInput();
-      $('status-area').style.display = 'none';
-    }
-  </script>
+<div class="page">
+<header class="header">
+<div class="logo">WZN DL</div>
+<div class="tagline">Baixe vídeos do TikTok sem marca d'água — grátis</div>
+<div class="platform-chips">
+<span class="chip"> Vídeos</span>
+<span class="chip"> Fotos</span>
+<span class="chip"> Áudio</span>
+<span class="chip"> Sem marca d'água</span>
+</div>
+</header>
+<div class="search-box">
+<div class="search-label">Cole o link do TikTok abaixo</div>
+<div class="input-row">
+<div class="url-wrap">
+<input id="u" type="url" class="url-inp" placeholder="https://www.tiktok.com/@usuario/video/..." autocomplete="off" spellcheck="false"/>
+<button class="clear-btn" id="cb" onclick="clearAll()">×</button>
+</div>
+<button class="paste-btn" onclick="pasteUrl()"> Colar</button>
+</div>
+<button class="download-btn" id="db" onclick="iniciar()">⬇ Baixar</button>
+</div>
+<div id="sw" class="status-wrap hidden">
+<div class="status-card">
+<div class="status-dot" id="sd"></div>
+<span id="st"></span>
+</div>
+</div>
+<div id="ec" class="error-card hidden">
+<span class="error-label">Erro</span>
+<span id="em"></span>
+</div>
+<div id="rc" class="result-card hidden fade-up">
+<div id="ta"></div>
+<div id="sr" class="stats-row hidden"></div>
+<div class="dl-section">
+<div class="dl-section-label">Escolha o formato</div>
+<div id="db2"></div>
+<div id="pw" class="prog-wrap hidden">
+<div class="prog-meta"><span id="pl"></span><span id="pp"></span></div>
+<div class="prog-track"><div id="pf" class="prog-fill" style="width:0%"></div></div>
+</div>
+<div id="dn" class="done-banner hidden">
+<div class="done-title"> Pronto! Baixando seu arquivo...</div>
+<div class="done-sub">Verifique sua pasta de downloads.</div>
+<button class="done-reset" onclick="clearAll()">↩ Baixar outro vídeo</button>
+</div>
+</div>
+</div>
+<div class="footer">Apenas para uso pessoal &bull; Respeite os criadores de conteúdo &bull; Powered by Wzn</div>
+</div>
+<script id="__app_script__">
+const _API = 'https://www.tikwm.com/api/';
+let _data = null, _busy = false, _timer = null;
+const g = id => document.getElementById(id);
+const show = id => g(id).classList.remove('hidden');
+const hide = id => g(id).classList.add('hidden');
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+g('u').addEventListener('input', () => { g('cb').style.display = g('u').value ? 'block' : 'none'; });
+g('u').addEventListener('keydown', e => { if(e.key==='Enter') iniciar(); });
+
+async function pasteUrl() {
+  try { const t = await navigator.clipboard.readText(); g('u').value=t.trim(); g('cb').style.display=t.trim()?'block':'none'; }
+  catch { g('u').focus(); }
+}
+
+function clearAll() {
+  g('u').value=''; g('cb').style.display='none';
+  hide('sw'); hide('ec'); hide('rc'); hide('pw'); hide('dn');
+  _data=null; _busy=false;
+  if(_timer){clearInterval(_timer);_timer=null;}
+}
+
+function setStatus(txt, type) {
+  show('sw'); g('st').textContent=txt;
+  const d=g('sd'); d.className='status-dot';
+  if(type==='ok') d.classList.add('ok');
+  if(type==='err') d.classList.add('err');
+}
+
+function showErr(msg) { g('em').textContent=msg; show('ec'); }
+
+async function iniciar() {
+  const url = g('u').value.trim();
+  if(!url){ showErr('Cole o link do TikTok no campo acima.'); show('ec'); return; }
+  hide('ec'); hide('rc'); hide('dn'); hide('pw');
+  const btn=g('db'); btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Buscando...';
+  setStatus('Conectando à API...');
+  await wait(500);
+  setStatus('Contactando servidor...');
+  await wait(500);
+  setStatus('Analisando o link...');
+  try {
+    const p=new URLSearchParams({url,hd:'1'});
+    const r=await fetch(_API+'?'+p,{headers:{Accept:'application/json'},signal:AbortSignal.timeout(15000)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    if(j.code!==0||!j.data) throw new Error(j.msg||'Não foi possível processar esse link.');
+    setStatus('Conteúdo encontrado ','ok');
+    _data=j.data;
+    renderResult(j.data);
+  } catch(e) {
+    setStatus('Falha na requisição','err');
+    const m=e.message||'';
+    showErr(e.name==='AbortError'||m.includes('fetch')||m.includes('Failed')
+      ?'Erro de conexão. Verifique sua internet e tente novamente.'
+      :m||'Não foi possível baixar. Verifique se o link é público.');
+  } finally {
+    btn.disabled=false; btn.innerHTML='⬇ Baixar';
+  }
+}
+
+function detectType(d) {
+  if(Array.isArray(d.images)&&d.images.length>0) return 'photo';
+  if(!d.play&&(d.music_info?.play||d.music)) return 'sound';
+  return 'video';
+}
+
+function fmtN(n){if(!n)return'0';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return String(n);}
+function fmtD(s){if(!s)return'';return Math.floor(s/60)+':'+(s%60).toString().padStart(2,'0');}
+
+function renderResult(d) {
+  const type=detectType(d);
+  const cover=d.cover||d.origin_cover||'';
+  const title=(d.title||'').split('#')[0].trim()||'TikTok Content';
+  const author=d.author?.nickname?'@'+d.author.nickname:'';
+  const ta=g('ta');
+  if(cover){
+    ta.innerHTML='<div class="thumb-banner"><img src="'+cover+'" alt=""/><div class="thumb-overlay"></div><div class="thumb-meta">'+(author?'<div class="thumb-author">'+author+'</div>':'')+'<div class="thumb-title">'+title+'</div></div></div>';
+  } else {
+    const ico=type==='photo'?'':type==='sound'?'':'';
+    ta.innerHTML='<div class="no-thumb"><div class="no-thumb-icon">'+ico+'</div><div class="no-thumb-info">'+(author?'<div class="no-thumb-author">'+author+'</div>':'')+'<div class="no-thumb-title">'+title+'</div></div></div>';
+  }
+  const sr=g('sr'); const stats=[];
+  if(d.play_count) stats.push('<div class="stat"> <span>'+fmtN(d.play_count)+'</span> views</div>');
+  if(d.digg_count) stats.push('<div class="stat"> <span>'+fmtN(d.digg_count)+'</span> curtidas</div>');
+  if(d.comment_count) stats.push('<div class="stat"> <span>'+fmtN(d.comment_count)+'</span></div>');
+  if(d.share_count) stats.push('<div class="stat">↗ <span>'+fmtN(d.share_count)+'</span></div>');
+  if(d.duration) stats.push('<div class="stat">⏱ <span>'+fmtD(d.duration)+'</span></div>');
+  if(stats.length){sr.innerHTML=stats.join('');show('sr');}else hide('sr');
+  const db2=g('db2'); db2.innerHTML='';
+  if(type==='video') buildVideo(db2,d);
+  else if(type==='photo') buildPhoto(db2,d);
+  else buildSound(db2,d);
+  const rc=g('rc'); rc.classList.remove('hidden','fade-up'); void rc.offsetWidth; rc.classList.add('fade-up');
+  hide('pw'); hide('dn');
+}
+
+function mkBtn(cls,icon,text,sub){
+  const b=document.createElement('button');
+  b.className='dl-btn '+cls;
+  b.innerHTML='<span class="btn-icon">'+icon+'</span><span class="btn-text">'+text+'<small>'+sub+'</small></span>';
+  return b;
+}
+
+function buildVideo(w,d){
+  const hd=d.hdplay||d.play||'',sd=d.play||'',mp3=d.music_info?.play||d.music||'';
+  const g2=document.createElement('div'); g2.className='btn-grid cols-2';
+  const bHD=mkBtn('primary','','MP4 HD','Melhor qualidade'); bHD.onclick=()=>baixar(hd,'tiktok_hd.mp4','MP4 HD'); g2.appendChild(bHD);
+  const bSD=mkBtn('secondary','','MP4 SD','Menor tamanho'); bSD.onclick=()=>baixar(sd,'tiktok_sd.mp4','MP4 SD'); g2.appendChild(bSD);
+  if(mp3){const bA=mkBtn('audio full','','Baixar MP3','Só o áudio');bA.onclick=()=>baixar(mp3,'tiktok_audio.mp3','MP3');g2.appendChild(bA);}
+  w.appendChild(g2);
+}
+
+function buildPhoto(w,d){
+  const imgs=d.images||[],mp3=d.music_info?.play||d.music||'';
+  const lbl=document.createElement('div');
+  lbl.style.cssText='font-size:.75rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;';
+  lbl.textContent=imgs.length+' foto'+(imgs.length>1?'s':'')+' no carrossel — clique para baixar';
+  w.appendChild(lbl);
+  const pg=document.createElement('div'); pg.className='photo-grid';
+  imgs.forEach((url,i)=>{
+    const it=document.createElement('div'); it.className='photo-item';
+    it.innerHTML='<img src="'+url+'" loading="lazy"/><div class="photo-num">'+(i+1)+'</div>';
+    it.onclick=()=>baixar(url,'tiktok_foto_'+(i+1)+'.jpg','Foto '+(i+1));
+    pg.appendChild(it);
+  });
+  w.appendChild(pg);
+  if(imgs.length>1){
+    const ba=document.createElement('button'); ba.className='dl-all-btn';
+    ba.textContent='⬇ Baixar todas as '+imgs.length+' fotos';
+    ba.onclick=()=>baixarTudo(imgs.map((url,i)=>({url,nome:'tiktok_foto_'+(i+1)+'.jpg',label:'Foto '+(i+1)})));
+    w.appendChild(ba);
+  }
+  if(mp3){
+    const sep=document.createElement('div'); sep.style.cssText='border-top:1px solid rgba(139,92,246,.12);margin:14px 0;'; w.appendChild(sep);
+    const gg=document.createElement('div'); gg.className='btn-grid cols-1';
+    const bA=mkBtn('audio full','','Baixar Música','Áudio do carrossel'); bA.onclick=()=>baixar(mp3,'tiktok_audio.mp3','MP3'); gg.appendChild(bA); w.appendChild(gg);
+  }
+}
+
+function buildSound(w,d){
+  const audioUrl=d.music_info?.play||d.music||'';
+  const gg=document.createElement('div'); gg.className='btn-grid cols-1';
+  if(audioUrl){
+    const bA=mkBtn('audio full','','Baixar Áudio','Formato MP3');
+    bA.onclick=()=>baixar(audioUrl,'tiktok_audio.mp3','Áudio');
+    gg.appendChild(bA);
+  } else {
+    const msg=document.createElement('p');
+    msg.style.cssText='color:var(--muted);font-size:.85rem;text-align:center;padding:10px 0;';
+    msg.textContent='Nenhuma URL de download disponível para este link.';
+    gg.appendChild(msg);
+  }
+  w.appendChild(gg);
+}
+
+async function baixar(url,nome,label){
+  if(_busy||!url) return;
+  _busy=true;
+  g('db2').querySelectorAll('button,.photo-item').forEach(b=>{b.tagName==='BUTTON'?b.disabled=true:b.style.pointerEvents='none';});
+  hide('dn'); show('pw');
+  g('pf').style.width='0%'; g('pp').textContent='0%'; g('pl').textContent='Baixando '+label+'...';
+  let pct=0;
+  if(_timer) clearInterval(_timer);
+  _timer=setInterval(()=>{
+    pct=Math.min(pct+Math.random()*8+2,88);
+    g('pf').style.width=Math.round(pct)+'%'; g('pp').textContent=Math.round(pct)+'%';
+  },200);
+  let ok=false;
+  try {
+    const r=await fetch(url,{mode:'cors',signal:AbortSignal.timeout(60000)});
+    if(!r.ok) throw new Error(''+r.status);
+    const blob=await r.blob(),obj=URL.createObjectURL(blob);
+    fireLink(obj,nome); setTimeout(()=>URL.revokeObjectURL(obj),8000); ok=true;
+  } catch {
+    try { fireLink(url,nome); ok=true; }
+    catch { window.open(url,'_blank','noopener,noreferrer'); ok=true; }
+  }
+  clearInterval(_timer);
+  if(ok){
+    g('pf').style.width='100%'; g('pp').textContent='100%'; g('pl').textContent='Concluído!';
+    const dn=g('dn'); dn.classList.remove('hidden','fade-up'); void dn.offsetWidth; dn.classList.add('fade-up'); show('dn');
+  } else {
+    hide('pw'); showErr('Falha no download. Tente novamente.');
+    g('db2').querySelectorAll('button').forEach(b=>b.disabled=false);
+  }
+  _busy=false;
+}
+
+async function baixarTudo(itens){
+  for(const it of itens){fireLink(it.url,it.nome);await wait(700);}
+  const dn=g('dn'); dn.classList.remove('hidden','fade-up'); void dn.offsetWidth; dn.classList.add('fade-up'); show('dn');
+}
+
+function fireLink(href,nome){
+  const a=document.createElement('a');
+  a.href=href; a.download=nome||'wzn_download'; a.target='_blank'; a.rel='noopener noreferrer';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+</script>
 </body>
 </html>
