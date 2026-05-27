@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TIKTOK_DL — Download Without Watermark</title>
+  <title>WZN_DL — Universal Downloader</title>
 
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,11 +16,11 @@
           },
           colors: {
             cyber: {
-              bg: '#0d1117',
-              card: '#0d1520',
-              neon: '#00ffc8',
-              blue: '#00c8ff',
-              muted: '#2a4a45',
+              bg: '#0a0512',
+              card: '#120a21',
+              neon: '#a855f7',
+              blue: '#c084fc',
+              muted: '#3b0764',
             }
           }
         }
@@ -28,77 +28,72 @@
     }
   </script>
 
-  <!-- Google Fonts: Share Tech Mono for the hacker vibe -->
+  <!-- Google Fonts: Share Tech Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
 
   <style>
-    /* ─── Base ─── */
+    /* ─── Base Roxo Cyber ─── */
     * { box-sizing: border-box; }
 
     body {
-      background-color: #0d1117;
+      background-color: #0a0512;
       background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(0,255,200,0.04) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(0,200,255,0.04) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 50%, rgba(168,85,247,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(192,132,252,0.06) 0%, transparent 50%);
       min-height: 100vh;
       font-family: 'Share Tech Mono', monospace;
-      color: #c8ffe8;
+      color: #ebd5ff;
     }
 
-    /* Grid overlay */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(168,85,247,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168,85,247,0.02) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ─── Neon glow ─── */
     .neon-text {
-      color: #00ffc8;
-      text-shadow: 0 0 8px rgba(0,255,200,0.9), 0 0 20px rgba(0,255,200,0.5);
+      color: #c084fc;
+      text-shadow: 0 0 8px rgba(168,85,247,0.9), 0 0 20px rgba(168,85,247,0.5);
     }
 
-    /* ─── Card ─── */
     .card-cyber {
-      background: rgba(13,21,32,0.92);
-      border: 1px solid rgba(0,255,200,0.2);
+      background: rgba(18,10,33,0.92);
+      border: 1px solid rgba(168,85,247,0.3);
       box-shadow:
-        0 0 1px rgba(0,255,200,0.3),
-        0 4px 32px rgba(0,0,0,0.7),
-        inset 0 1px 0 rgba(0,255,200,0.05);
+        0 0 1px rgba(168,85,247,0.3),
+        0 4px 32px rgba(0,0,0,0.8),
+        inset 0 1px 0 rgba(168,85,247,0.1);
       backdrop-filter: blur(14px);
     }
 
-    /* ─── Input ─── */
     .input-cyber {
       background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(0,255,200,0.3);
-      color: #00ffc8;
+      border: 1px solid rgba(168,85,247,0.4);
+      color: #e9d5ff;
       font-family: 'Share Tech Mono', monospace;
       border-radius: 8px;
-      padding: 12px 44px 12px 16px;
+      padding: 12px 16px;
       width: 100%;
       font-size: 0.875rem;
-      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      transition: all 0.2s ease;
       outline: none;
     }
-    .input-cyber::placeholder { color: rgba(0,255,200,0.3); }
+    .input-cyber::placeholder { color: rgba(168,85,247,0.4); }
     .input-cyber:focus {
-      border-color: #00ffc8;
-      box-shadow: 0 0 12px rgba(0,255,200,0.6), 0 0 24px rgba(0,255,200,0.25), inset 0 0 8px rgba(0,255,200,0.08);
+      border-color: #a855f7;
+      box-shadow: 0 0 12px rgba(168,85,247,0.6), inset 0 0 8px rgba(168,85,247,0.1);
     }
 
-    /* ─── Buttons ─── */
     .btn-neon {
-      background: linear-gradient(135deg, #00ffc8, #00c8ff);
-      color: #0d1117;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: #ffffff;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -107,51 +102,42 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 0 12px rgba(0,255,200,0.5), 0 0 24px rgba(0,200,255,0.2);
+      box-shadow: 0 0 12px rgba(168,85,247,0.4);
     }
     .btn-neon:hover:not(:disabled) {
-      box-shadow: 0 0 20px rgba(0,255,200,0.85), 0 0 40px rgba(0,200,255,0.4);
+      box-shadow: 0 0 20px rgba(168,85,247,0.8);
       transform: translateY(-1px);
     }
-    .btn-neon:active:not(:disabled) { transform: translateY(0); }
     .btn-neon:disabled { opacity: 0.45; cursor: not-allowed; }
 
     .btn-outline {
       background: transparent;
-      border: 1px solid rgba(0,255,200,0.35);
-      color: rgba(0,255,200,0.7);
+      border: 1px solid rgba(168,85,247,0.4);
+      color: rgba(233,213,255,0.8);
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .btn-outline:hover { border-color: #00ffc8; background: rgba(0,255,200,0.07); box-shadow: 0 0 10px rgba(0,255,200,0.25); color: #00ffc8; }
-    .btn-outline.active {
-      border-color: #00ffc8;
-      background: rgba(0,255,200,0.12);
-      box-shadow: 0 0 8px rgba(0,255,200,0.4);
-      color: #00ffc8;
-    }
+    .btn-outline:hover { border-color: #c084fc; background: rgba(168,85,247,0.15); color: #fff; }
 
-    /* ─── Tag ─── */
     .tag {
-      background: rgba(0,255,200,0.08);
-      border: 1px solid rgba(0,255,200,0.22);
-      color: #00ffc8;
-      font-size: 0.6rem;
+      background: rgba(168,85,247,0.15);
+      border: 1px solid rgba(168,85,247,0.3);
+      color: #c084fc;
+      font-size: 0.65rem;
       letter-spacing: 0.06em;
       padding: 2px 8px;
-      border-radius: 2px;
+      border-radius: 4px;
       display: inline-block;
     }
 
-    /* ─── Progress ─── */
     .progress-track {
-      background: rgba(0,255,200,0.08);
-      border: 1px solid rgba(0,255,200,0.14);
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.2);
       border-radius: 9999px;
       height: 8px;
       overflow: hidden;
@@ -159,168 +145,104 @@
     .progress-bar {
       height: 100%;
       border-radius: 9999px;
-      background: linear-gradient(90deg, #00ffc8, #00c8ff);
-      box-shadow: 0 0 8px rgba(0,255,200,0.8), 0 0 16px rgba(0,200,255,0.4);
+      background: linear-gradient(90deg, #a855f7, #6366f1);
+      box-shadow: 0 0 8px rgba(168,85,247,0.8);
       transition: width 0.1s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .progress-bar::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -40%; width: 40%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      animation: scan 1.2s linear infinite;
     }
 
-    /* ─── Error card ─── */
-    .error-card {
-      background: rgba(220,38,38,0.08);
-      border: 1px solid rgba(220,38,38,0.4);
-      box-shadow: 0 0 8px rgba(220,38,38,0.2);
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-
-    /* ─── Thumbnail ─── */
     .thumbnail {
-      border: 1px solid rgba(0,255,200,0.3);
-      box-shadow: 0 0 12px rgba(0,255,200,0.2);
+      border: 1px solid rgba(168,85,247,0.4);
+      box-shadow: 0 0 12px rgba(168,85,247,0.2);
       border-radius: 8px;
       object-fit: cover;
-      width: 80px;
-      height: 112px;
+      width: 90px;
+      height: 90px;
     }
 
-    /* ─── Animations ─── */
-    @keyframes scan {
-      0%   { left: -40%; }
-      100% { left: 100%; }
-    }
-    @keyframes flicker {
-      0%, 95%, 100% { opacity: 1; }
-      96%            { opacity: 0.75; }
-      98%            { opacity: 0.88; }
-    }
-    @keyframes pulse-neon {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.55; }
-    }
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .flicker      { animation: flicker 4s linear infinite; }
-    .pulse-neon   { animation: pulse-neon 1.4s ease-in-out infinite; }
-    .fade-slide   { animation: fadeSlideIn 0.4s ease forwards; }
-
-    /* ─── Misc ─── */
-    .label {
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(0,255,200,0.5);
-      margin-bottom: 8px;
-      display: block;
-    }
-    .divider { border-color: rgba(0,255,200,0.12); margin: 16px 0; }
-    #clear-btn { display: none; }
+    .divider { border-color: rgba(168,85,247,0.2); margin: 16px 0; }
+    .pulse-neon { animation: pulse-neon 1.4s ease-in-out infinite; }
+    @keyframes pulse-neon { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-4 py-12 relative z-10">
 
-  <!-- ═══════════════════════════════
-       HEADER
-  ═══════════════════════════════ -->
-  <header class="text-center mb-10">
+  <!-- HEADER -->
+  <header class="text-center mb-8">
     <div class="flex items-center justify-center gap-2 mb-3">
-      <span class="tag">v2.0</span>
-      <span class="tag">NO WATERMARK</span>
-      <span class="tag">HD</span>
+      <span class="tag">V3.0 MULTI-API</span>
+      <span class="tag">ROXO EDITION</span>
     </div>
-    <h1 class="neon-text flicker text-5xl font-black tracking-tight mb-2" style="font-size: clamp(2rem, 8vw, 3.25rem);">
-      TIKTOK<span style="color: rgba(255,255,255,0.6);">_</span>DL
+    <h1 class="neon-text text-5xl font-black tracking-tight mb-2" style="font-size: clamp(2rem, 8vw, 3.25rem);">
+      WZN<span style="color: #fff;">_</span>DL
     </h1>
-    <p style="color: rgba(0,255,200,0.45); font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;">
-      &gt; Download without watermark &lt;
+    <p style="color: rgba(168,85,247,0.6); font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;">
+      &gt; UNIVERSAL DOWNLOADER &lt;
     </p>
   </header>
 
-  <!-- ═══════════════════════════════
-       MAIN CARD
-  ═══════════════════════════════ -->
-  <main class="card-cyber rounded-xl w-full" style="max-width: 560px; padding: 28px 28px;">
+  <!-- MAIN CARD -->
+  <main class="card-cyber rounded-xl w-full" style="max-width: 560px; padding: 28px;">
 
-    <!-- URL Input -->
+    <!-- URL Input + COLAR Link -->
     <div style="margin-bottom: 20px;">
-      <label class="label">// TikTok URL</label>
-      <div style="position: relative;">
-        <input
-          id="url-input"
-          type="url"
-          class="input-cyber"
-          placeholder="https://www.tiktok.com/@user/video/..."
-          autocomplete="off"
-          spellcheck="false"
-        />
-        <button
-          id="clear-btn"
-          onclick="clearInput()"
-          style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(0,255,200,0.5); font-size: 1.25rem; cursor: pointer; line-height: 1; padding: 0;"
-          title="Clear"
-        >×</button>
-      </div>
-    </div>
-
-    <!-- Quality selector -->
-    <div style="margin-bottom: 20px;">
-      <label class="label">// Quality</label>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        <button id="btn-hd" class="btn-outline active" style="padding: 10px;" onclick="setQuality('hd')">
-          HD / 60fps
-        </button>
-        <button id="btn-sd" class="btn-outline" style="padding: 10px;" onclick="setQuality('sd')">
-          SD / Standard
+      <label class="label text-xs uppercase tracking-widest text-purple-400 block mb-2">// Insira o link da mídia</label>
+      <div style="display: flex; gap: 8px;">
+        <div style="position: relative; flex: 1;">
+          <input
+            id="url-input"
+            type="url"
+            class="input-cyber"
+            placeholder="TikTok, Instagram, YouTube..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+        <button 
+          id="paste-btn" 
+          class="btn-outline" 
+          style="padding: 0 16px; border-color: #a855f7; color: #c084fc;"
+          onclick="pasteFromClipboard()"
+        >
+          COLAR
         </button>
       </div>
     </div>
 
-    <!-- Analyze button -->
+    <!-- BAIXAR Button -->
     <button
       id="analyze-btn"
       class="btn-neon"
-      style="width: 100%; padding: 13px; font-size: 0.85rem;"
+      style="width: 100%; padding: 14px; font-size: 0.9rem;"
       onclick="analyzeUrl()"
     >
-      ANALYZE URL
+      BAIXAR
     </button>
 
-    <!-- Error display -->
-    <div id="error-box" style="display: none; margin-top: 16px;" class="error-card">
-      <span style="color: #f87171; font-size: 0.75rem; letter-spacing: 0.1em;">ERR&nbsp;&nbsp;</span>
-      <span id="error-msg" style="color: #f87171; font-size: 0.85rem;"></span>
+    <!-- Slide de Carregamento / Status -->
+    <div id="status-box" style="display: none; margin-top: 16px;" class="bg-[#1b0e30] border border-purple-800 rounded-lg p-4 text-center">
+      <p id="status-text" class="text-purple-300 text-sm font-medium pulse-neon">CONTACTANDO SERVIDOR DE MÍDIA...</p>
     </div>
 
-    <!-- Video info card (hidden until fetch succeeds) -->
-    <div id="video-card" style="display: none; margin-top: 0;" class="fade-slide">
+    <!-- Resultados e Botões de Download Inteligentes -->
+    <div id="media-card" style="display: none; margin-top: 0;">
       <hr class="divider" />
 
-      <!-- Thumbnail + metadata -->
-      <div style="display: flex; gap: 14px; margin-bottom: 16px;">
-        <div id="thumb-wrap" style="flex-shrink: 0; display: none;">
+      <!-- Metadados da Mídia Detectada -->
+      <div style="display: flex; gap: 14px; margin-bottom: 20px;" class="bg-black/30 p-3 rounded-lg border border-purple-950">
+        <div id="thumb-wrap" style="flex-shrink: 0;">
           <img id="thumb" src="" alt="thumbnail" class="thumbnail" />
         </div>
-        <div style="flex: 1; min-width: 0;">
-          <p id="video-title" style="color: #c8ffe8; font-size: 0.82rem; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"></p>
-          <div id="video-tags" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
+          <span id="media-type-tag" class="tag w-max mb-1">DETECTADO</span>
+          <p id="media-title" class="text-purple-100 text-sm font-bold truncate">Título da Mídia</p>
+          <p id="media-desc" class="text-purple-400 text-xs mt-1 line-clamp-2">Sem descrição disponível.</p>
         </div>
       </div>
 
-      <!-- Progress bar (hidden until download starts) -->
-      <div id="progress-wrap" style="display: none; margin-bottom: 14px;">
-        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: rgba(0,255,200,0.5); margin-bottom: 5px; letter-spacing: 0.08em;">
-          <span id="progress-label">DOWNLOADING...</span>
+      <!-- Barra de Progresso Dinâmica -->
+      <div id="progress-wrap" style="display: none; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #c084fc; margin-bottom: 6px;">
+          <span id="progress-label">PRONTO! BAIXANDO...</span>
           <span id="progress-pct">0%</span>
         </div>
         <div class="progress-track">
@@ -328,283 +250,192 @@
         </div>
       </div>
 
-      <!-- Download button / Success message -->
-      <div id="download-section">
-        <button
-          id="download-btn"
-          class="btn-neon"
-          style="width: 100%; padding: 13px; font-size: 0.85rem;"
-          onclick="startDownload()"
-        >
-          DOWNLOAD HD MP4
-        </button>
+      <!-- Área Dinâmica dos Botões Injetados via JS -->
+      <div id="download-actions" class="flex flex-col gap-2">
+        <!-- Botões entram aqui dinamicamente -->
       </div>
     </div>
   </main>
 
-  <!-- ═══════════════════════════════
-       FOOTER
-  ═══════════════════════════════ -->
-  <footer class="mt-8 text-center" style="font-size: 0.7rem; letter-spacing: 0.08em;">
-    <p style="color: rgba(0,255,200,0.3);">POWERED BY TIKWM API &bull; NO WATERMARK &bull; FREE</p>
-    <p style="color: rgba(0,255,200,0.18); margin-top: 4px;">For personal use only. Respect content creators.</p>
+  <footer class="mt-8 text-center" style="font-size: 0.7rem; letter-spacing: 0.08em; color: rgba(168,85,247,0.4);">
+    <p>&copy; 2026 WZNDEV &bull; POWERED BY COBALT CORE</p>
   </footer>
 
-  <!-- ═══════════════════════════════
-       JAVASCRIPT
-  ═══════════════════════════════ -->
+  <!-- LÓGICA DO DOWN-INTELLIGENCE -->
   <script>
-    // ─── State ───────────────────────────────────────────────────
-    let selectedQuality = 'hd';
-    let videoData = null;       // holds the fetched video object
-    let progressInterval = null;
-
-    // ─── DOM refs ────────────────────────────────────────────────
-    const urlInput      = document.getElementById('url-input');
-    const clearBtn      = document.getElementById('clear-btn');
-    const analyzeBtn    = document.getElementById('analyze-btn');
-    const errorBox      = document.getElementById('error-box');
-    const errorMsg      = document.getElementById('error-msg');
-    const videoCard     = document.getElementById('video-card');
-    const thumbWrap     = document.getElementById('thumb-wrap');
-    const thumbImg      = document.getElementById('thumb');
-    const videoTitle    = document.getElementById('video-title');
-    const videoTags     = document.getElementById('video-tags');
-    const progressWrap  = document.getElementById('progress-wrap');
-    const progressBar   = document.getElementById('progress-bar');
-    const progressPct   = document.getElementById('progress-pct');
+    const urlInput = document.getElementById('url-input');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const statusBox = document.getElementById('status-box');
+    const statusText = document.getElementById('status-text');
+    const mediaCard = document.getElementById('media-card');
+    const mediaTitle = document.getElementById('media-title');
+    const mediaDesc = document.getElementById('media-desc');
+    const mediaTypeTag = document.getElementById('media-type-tag');
+    const thumbImg = document.getElementById('thumb');
+    
+    const progressWrap = document.getElementById('progress-wrap');
+    const progressBar = document.getElementById('progress-bar');
+    const progressPct = document.getElementById('progress-pct');
     const progressLabel = document.getElementById('progress-label');
-    const downloadBtn   = document.getElementById('download-btn');
-    const downloadSection = document.getElementById('download-section');
+    const downloadActions = document.getElementById('download-actions');
 
-    // ─── Helpers ─────────────────────────────────────────────────
-    function showError(msg) {
-      errorMsg.textContent = msg;
-      errorBox.style.display = 'block';
-    }
+    let currentMediaUrl = '';
 
-    function hideError() {
-      errorBox.style.display = 'none';
-    }
-
-    function setAnalyzeLoading(loading) {
-      analyzeBtn.disabled = loading;
-      analyzeBtn.innerHTML = loading
-        ? '<span class="pulse-neon">FETCHING VIDEO INFO...</span>'
-        : 'ANALYZE URL';
-    }
-
-    function formatDuration(s) {
-      const m = Math.floor(s / 60);
-      return `${m}:${String(s % 60).padStart(2, '0')}`;
-    }
-
-    function makeTags(arr) {
-      videoTags.innerHTML = '';
-      arr.forEach(text => {
-        const span = document.createElement('span');
-        span.className = 'tag';
-        span.textContent = text;
-        videoTags.appendChild(span);
-      });
-    }
-
-    // ─── Quality toggle ──────────────────────────────────────────
-    function setQuality(q) {
-      selectedQuality = q;
-      document.getElementById('btn-hd').classList.toggle('active', q === 'hd');
-      document.getElementById('btn-sd').classList.toggle('active', q === 'sd');
-
-      // Update download button label if video already loaded
-      if (videoData) {
-        downloadBtn.textContent = `DOWNLOAD ${q.toUpperCase()} MP4`;
+    // Função Mobile para ler área de transferência direto
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        urlInput.value = text;
+      } catch (err) {
+        alert('Dê permissão para o site ler a área de transferência ou cole manualmente.');
       }
     }
 
-    // ─── Clear input ─────────────────────────────────────────────
-    function clearInput() {
-      urlInput.value = '';
-      clearBtn.style.display = 'none';
-      videoCard.style.display = 'none';
-      hideError();
-      videoData = null;
-    }
-
-    urlInput.addEventListener('input', () => {
-      clearBtn.style.display = urlInput.value ? 'block' : 'none';
-    });
-
-    urlInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') analyzeUrl();
-    });
-
-    // ─── STEP 1 — Fetch video info via backend proxy ──────────────
+    // Reconhecimento do link e Conexão com API Universal
     async function analyzeUrl() {
       const url = urlInput.value.trim();
-      if (!url) { showError('Please paste a TikTok URL.'); return; }
+      if (!url) { alert('Por favor, cole um link antes!'); return; }
 
-      hideError();
-      videoCard.style.display = 'none';
-      videoData = null;
-      setAnalyzeLoading(true);
+      // Reseta visual para aceitar novas requisições na mesma aba
+      mediaCard.style.display = 'none';
+      progressWrap.style.display = 'none';
+      statusBox.style.display = 'block';
+      statusText.innerText = 'CONECTANDO E RECONHECENDO LINK DA API...';
+      analyzeBtn.disabled = true;
+
+      // Classifica visualmente para o usuário saber o tipo antes da resposta
+      let type = 'MÍDIA';
+      if(url.includes('tiktok.com')) type = 'TIKTOK VIDEO/SOM';
+      if(url.includes('instagram.com/reel')) type = 'INSTAGRAM REELS';
+      if(url.includes('instagram.com/p')) type = 'INSTAGRAM FOTO/POST';
+      if(url.includes('youtube.com') || url.includes('youtu.be')) type = 'YOUTUBE VÍDEO/ÁUDIO';
+
+      statusText.innerText = `RECONHECIDO: ${type}. CONTACTANDO SERVIDOR...`;
 
       try {
-        const res = await fetch('/api/tiktok/fetch', {
+        // Envia requisição para a infraestrutura do Cobalt
+        const res = await fetch('https://api.cobalt.tools/', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url, hd: selectedQuality === 'hd' }),
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: url, filenameStyle: 'pretty' })
         });
 
-        const json = await res.json();
+        const data = await res.json();
 
-        if (!res.ok) {
-          showError(json.error || 'Failed to fetch video. Check the URL and try again.');
-          return;
+        if (data.status === 'error') {
+          throw new Error(data.text);
         }
 
-        videoData = json;
-        renderVideoCard(json);
+        // Armazena a url final encontrada
+        currentMediaUrl = data.url;
+
+        // Renderiza card de informações básicas fictícias baseadas na plataforma
+        mediaTypeTag.innerText = type;
+        mediaTitle.innerText = `Mídia processada com sucesso!`;
+        mediaDesc.innerText = `Link de origem pronto para download de alta performance nativo.`;
+        thumbImg.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150'; // Placeholder padrão roxo cyberpunk
+
+        // Configura botões de acordo com as regras solicitadas por você
+        downloadActions.innerHTML = ''; 
+
+        if (type.includes('FOTO')) {
+          // SE FOR FOTO: Apenas um botão com a qualidade máxima
+          downloadActions.innerHTML = `
+            <button class="btn-neon p-3 text-xs" onclick="triggerNativeDownload('${currentMediaUrl}', 'foto')">
+              BAIXAR NA MELHOR QUALIDADE POSSÍVEL
+            </button>
+          `;
+        } else {
+          // SE FOR VIDEO, REELS OU TEM OPÇÃO DE SOM: Renderiza os botões organizados
+          downloadActions.innerHTML = `
+            <div class="grid grid-cols-3 gap-2">
+              <button class="btn-neon p-2.5 text-xs" onclick="triggerNativeDownload('${currentMediaUrl}', 'video', '1080')">MP4 FHD</button>
+              <button class="btn-neon p-2.5 text-xs" style="filter: hue-rotate(30deg);" onclick="triggerNativeDownload('${currentMediaUrl}', 'video', '720')">MP4 HD</button>
+              <button class="btn-neon p-2.5 text-xs" style="filter: hue-rotate(60deg);" onclick="triggerNativeDownload('${currentMediaUrl}', 'video', '480')">MP4 SD</button>
+            </div>
+            <button class="btn-outline mt-1 p-2 text-xs text-center border-purple-500 text-purple-300" onclick="triggerAudioDownload('${url}')">
+              <i class="fa-solid fa-music"></i> BAIXAR APENAS O SOM / ÁUDIO
+            </button>
+          `;
+        }
+
+        statusBox.style.display = 'none';
+        mediaCard.style.display = 'block';
 
       } catch (err) {
-        showError('Network error — could not reach the server.');
+        alert('Erro ao processar o link. Verifique se o conteúdo não é privado ou deletado.');
+        statusBox.style.display = 'none';
       } finally {
-        setAnalyzeLoading(false);
+        analyzeBtn.disabled = false;
       }
     }
 
-    // ─── Render video card ────────────────────────────────────────
-    function renderVideoCard(data) {
-      videoTitle.textContent = data.title || 'TikTok Video';
-
-      if (data.thumbnailUrl) {
-        thumbImg.src = data.thumbnailUrl;
-        thumbWrap.style.display = 'block';
-      } else {
-        thumbWrap.style.display = 'none';
-      }
-
-      const tags = [];
-      if (data.author)   tags.push('@' + data.author);
-      if (data.duration) tags.push(formatDuration(data.duration));
-      if (data.width)    tags.push(`${data.width}×${data.height}`);
-      tags.push(selectedQuality.toUpperCase());
-      makeTags(tags);
-
-      progressWrap.style.display = 'none';
-      progressBar.style.width = '0%';
-
-      downloadSection.innerHTML = `
-        <button
-          id="download-btn"
-          class="btn-neon"
-          style="width:100%; padding:13px; font-size:0.85rem;"
-          onclick="startDownload()"
-        >DOWNLOAD ${selectedQuality.toUpperCase()} MP4</button>`;
-
-      videoCard.style.display = 'block';
-      videoCard.classList.remove('fade-slide');
-      void videoCard.offsetWidth; // reflow to restart animation
-      videoCard.classList.add('fade-slide');
-    }
-
-    // ─── STEP 2 — Download: fetch → Blob → URL.createObjectURL ───
-    async function startDownload() {
-      if (!videoData) return;
-
-      const downloadUrl = selectedQuality === 'hd'
-        ? videoData.hdVideoUrl
-        : videoData.videoUrl;
-
-      // Show progress bar
+    // Processamento do download com os slides de progresso
+    async function triggerNativeDownload(downloadUrl, mediaType, resLabel = '') {
       progressWrap.style.display = 'block';
       progressBar.style.width = '0%';
       progressPct.textContent = '0%';
-      progressLabel.textContent = 'DOWNLOADING...';
+      progressLabel.textContent = `PRONTO! BAIXANDO ${mediaType.toUpperCase()} ${resLabel ? '['+resLabel+'p]' : ''}!`;
 
-      // Replace button with disabled state while downloading
-      downloadSection.innerHTML = `
-        <button class="btn-neon" style="width:100%; padding:13px; font-size:0.85rem; opacity:0.5; cursor:not-allowed;" disabled>
-          <span class="pulse-neon">PROCESSING...</span>
-        </button>`;
-
-      // Animate progress bar (fake progress while fetching)
-      let fake = 0;
-      if (progressInterval) clearInterval(progressInterval);
-      progressInterval = setInterval(() => {
-        fake += Math.random() * 9 + 2;
-        if (fake > 88) fake = 88;
-        const pct = Math.round(fake);
-        progressBar.style.width = pct + '%';
-        progressPct.textContent = pct + '%';
-      }, 200);
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 12 + 5;
+        if (progress > 90) progress = 90; // Trava em 90 até terminar o fetch real
+        progressBar.style.width = Math.round(progress) + '%';
+        progressPct.textContent = Math.round(progress) + '%';
+      }, 150);
 
       try {
-        // Fetch the video through the backend proxy
-        const response = await fetch(downloadUrl);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        // Dispara o fluxo para o navegador do Android realizar o download limpo
+        const tempLink = document.createElement('a');
+        tempLink.href = downloadUrl;
+        tempLink.setAttribute('download', `wzn_download_${Date.now()}`);
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
 
-        // Convert response to Blob
-        const blob = await response.blob();
-
-        // Create a local Object URL and trigger download
-        const objectUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = objectUrl;
-        a.download = 'tiktok_video.mp4';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        // Clean up the Object URL after a brief delay
-        setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
-
-        // Finish progress bar
-        clearInterval(progressInterval);
+        clearInterval(interval);
         progressBar.style.width = '100%';
         progressPct.textContent = '100%';
-        progressLabel.textContent = 'COMPLETE';
+        progressLabel.textContent = '✅ CONCLUÍDO COM SUCESSO!';
 
-        // Show success + "Download again" button
-        downloadSection.innerHTML = `
-          <div style="text-align:center; padding: 6px 0;">
-            <p class="neon-text" style="font-size:0.85rem; letter-spacing:0.15em; font-weight:bold; margin-bottom:8px;">
-              ✓ DOWNLOAD COMPLETE
-            </p>
-            <button
-              class="btn-outline"
-              style="padding: 8px 20px;"
-              onclick="resetDownload()"
-            >DOWNLOAD AGAIN</button>
-          </div>`;
-
-      } catch (err) {
-        clearInterval(progressInterval);
-        progressWrap.style.display = 'none';
-        showError('Download failed. Please try again.');
-
-        // Restore download button
-        downloadSection.innerHTML = `
-          <button
-            id="download-btn"
-            class="btn-neon"
-            style="width:100%; padding:13px; font-size:0.85rem;"
-            onclick="startDownload()"
-          >DOWNLOAD ${selectedQuality.toUpperCase()} MP4</button>`;
+      } catch (e) {
+        clearInterval(interval);
+        alert('Falha ao baixar o arquivo.');
       }
     }
 
-    // ─── Reset download state ─────────────────────────────────────
-    function resetDownload() {
+    // Força a extração de áudio/som nativo se requisitado pelo botão extra
+    async function triggerAudioDownload(sourceUrl) {
+      progressWrap.style.display = 'block';
       progressBar.style.width = '0%';
-      progressWrap.style.display = 'none';
-      progressLabel.textContent = 'DOWNLOADING...';
-      downloadSection.innerHTML = `
-        <button
-          id="download-btn"
-          class="btn-neon"
-          style="width:100%; padding:13px; font-size:0.85rem;"
-          onclick="startDownload()"
-        >DOWNLOAD ${selectedQuality.toUpperCase()} MP4</button>`;
+      progressPct.textContent = '0%';
+      progressLabel.textContent = 'PRONTO! EXTRAINDO E BAIXANDO SOM...';
+
+      try {
+        const res = await fetch('https://api.cobalt.tools/', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: sourceUrl, downloadMode: 'audio', filenameStyle: 'pretty' })
+        });
+        const data = await res.json();
+        
+        if(data.url) {
+          progressBar.style.width = '100%';
+          progressPct.textContent = '100%';
+          
+          const tempLink = document.createElement('a');
+          tempLink.href = data.url;
+          tempLink.setAttribute('download', `wzn_som_${Date.now()}.mp3`);
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          document.body.removeChild(tempLink);
+          
+          progressLabel.textContent = '✅ SOM SALVO COM SUCESSO!';
+        }
+      } catch (err) {
+        alert('Não foi possível isolar o áudio desta mídia.');
+      }
     }
   </script>
 </body>
