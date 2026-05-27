@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WZN_DL — Universal Downloader</title>
 
-  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -28,12 +27,10 @@
     }
   </script>
 
-  <!-- Google Fonts: Share Tech Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
 
   <style>
-    /* ─── Base Roxo Cyber ─── */
     * { box-sizing: border-box; }
 
     body {
@@ -166,10 +163,9 @@
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-4 py-12 relative z-10">
 
-  <!-- HEADER -->
   <header class="text-center mb-8">
     <div class="flex items-center justify-center gap-2 mb-3">
-      <span class="tag">V3.0 MULTI-API</span>
+      <span class="tag">V3.2 ANTI-CORS</span>
       <span class="tag">ROXO EDITION</span>
     </div>
     <h1 class="neon-text text-5xl font-black tracking-tight mb-2" style="font-size: clamp(2rem, 8vw, 3.25rem);">
@@ -180,10 +176,8 @@
     </p>
   </header>
 
-  <!-- MAIN CARD -->
   <main class="card-cyber rounded-xl w-full" style="max-width: 560px; padding: 28px;">
 
-    <!-- URL Input + COLAR Link -->
     <div style="margin-bottom: 20px;">
       <label class="label text-xs uppercase tracking-widest text-purple-400 block mb-2">// Insira o link da mídia</label>
       <div style="display: flex; gap: 8px;">
@@ -208,7 +202,6 @@
       </div>
     </div>
 
-    <!-- BAIXAR Button -->
     <button
       id="analyze-btn"
       class="btn-neon"
@@ -218,28 +211,24 @@
       BAIXAR
     </button>
 
-    <!-- Slide de Carregamento / Status -->
     <div id="status-box" style="display: none; margin-top: 16px;" class="bg-[#1b0e30] border border-purple-800 rounded-lg p-4 text-center">
       <p id="status-text" class="text-purple-300 text-sm font-medium pulse-neon">CONTACTANDO SERVIDOR DE MÍDIA...</p>
     </div>
 
-    <!-- Resultados e Botões de Download Inteligentes -->
     <div id="media-card" style="display: none; margin-top: 0;">
       <hr class="divider" />
 
-      <!-- Metadados da Mídia Detectada -->
       <div style="display: flex; gap: 14px; margin-bottom: 20px;" class="bg-black/30 p-3 rounded-lg border border-purple-950">
         <div id="thumb-wrap" style="flex-shrink: 0;">
           <img id="thumb" src="" alt="thumbnail" class="thumbnail" />
         </div>
         <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
           <span id="media-type-tag" class="tag w-max mb-1">DETECTADO</span>
-          <p id="media-title" class="text-purple-100 text-sm font-bold truncate">Título da Mídia</p>
-          <p id="media-desc" class="text-purple-400 text-xs mt-1 line-clamp-2">Sem descrição disponível.</p>
+          <p id="media-title" class="text-purple-100 text-sm font-bold truncate">Mídia Processada</p>
+          <p id="media-desc" class="text-purple-400 text-xs mt-1 line-clamp-2">Pronto para download de alta performance nativo.</p>
         </div>
       </div>
 
-      <!-- Barra de Progresso Dinâmica -->
       <div id="progress-wrap" style="display: none; margin-bottom: 20px;">
         <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #c084fc; margin-bottom: 6px;">
           <span id="progress-label">PRONTO! BAIXANDO...</span>
@@ -250,111 +239,109 @@
         </div>
       </div>
 
-      <!-- Área Dinâmica dos Botões Injetados via JS -->
-      <div id="download-actions" class="flex flex-col gap-2">
-        <!-- Botões entram aqui dinamicamente -->
-      </div>
+      <div id="download-actions" class="flex flex-col gap-2"></div>
     </div>
   </main>
 
   <footer class="mt-8 text-center" style="font-size: 0.7rem; letter-spacing: 0.08em; color: rgba(168,85,247,0.4);">
-    <p>&copy; 2026 WZNDEV &bull; POWERED BY COBALT CORE</p>
+    <p>&copy; 2026 WZNDEV &bull; ANTI-BLOCK SYSTEM</p>
   </footer>
 
-  <!-- LÓGICA DO DOWN-INTELLIGENCE -->
   <script>
     const urlInput = document.getElementById('url-input');
     const analyzeBtn = document.getElementById('analyze-btn');
     const statusBox = document.getElementById('status-box');
     const statusText = document.getElementById('status-text');
     const mediaCard = document.getElementById('media-card');
-    const mediaTitle = document.getElementById('media-title');
-    const mediaDesc = document.getElementById('media-desc');
     const mediaTypeTag = document.getElementById('media-type-tag');
-    const thumbImg = document.getElementById('thumb');
-    
+    const downloadActions = document.getElementById('download-actions');
     const progressWrap = document.getElementById('progress-wrap');
     const progressBar = document.getElementById('progress-bar');
     const progressPct = document.getElementById('progress-pct');
     const progressLabel = document.getElementById('progress-label');
-    const downloadActions = document.getElementById('download-actions');
+    const thumbImg = document.getElementById('thumb');
 
-    let currentMediaUrl = '';
+    const apiEndpoints = [
+      'https://cobalt.wuk.sh/',
+      'https://api.cobalt.tools/'
+    ];
 
-    // Função Mobile para ler área de transferência direto
     async function pasteFromClipboard() {
       try {
         const text = await navigator.clipboard.readText();
         urlInput.value = text;
       } catch (err) {
-        alert('Dê permissão para o site ler a área de transferência ou cole manualmente.');
+        alert('Por favor, cole manualmente ou dê permissão de área de transferência.');
       }
     }
 
-    // Reconhecimento do link e Conexão com API Universal
+    async function fetchFromCobalt(payload) {
+      let lastError = null;
+      
+      for (let endpoint of apiEndpoints) {
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 
+              'Accept': 'application/json', 
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          if (res.ok) {
+            return await res.json();
+          }
+        } catch (err) {
+          lastError = err;
+        }
+      }
+      throw lastError || new Error('Todos os servidores estão ocupados.');
+    }
+
     async function analyzeUrl() {
       const url = urlInput.value.trim();
-      if (!url) { alert('Por favor, cole um link antes!'); return; }
+      if (!url) { alert('Cole um link válido primeiro!'); return; }
 
-      // Reseta visual para aceitar novas requisições na mesma aba
       mediaCard.style.display = 'none';
       progressWrap.style.display = 'none';
       statusBox.style.display = 'block';
-      statusText.innerText = 'CONECTANDO E RECONHECENDO LINK DA API...';
       analyzeBtn.disabled = true;
 
-      // Classifica visualmente para o usuário saber o tipo antes da resposta
       let type = 'MÍDIA';
       if(url.includes('tiktok.com')) type = 'TIKTOK VIDEO/SOM';
       if(url.includes('instagram.com/reel')) type = 'INSTAGRAM REELS';
       if(url.includes('instagram.com/p')) type = 'INSTAGRAM FOTO/POST';
       if(url.includes('youtube.com') || url.includes('youtu.be')) type = 'YOUTUBE VÍDEO/ÁUDIO';
 
-      statusText.innerText = `RECONHECIDO: ${type}. CONTACTANDO SERVIDOR...`;
+      statusText.innerText = `RECONHECIDO: ${type}. ENVIANDO REQUISIÇÃO PARA API`;
 
       try {
-        // Envia requisição para a infraestrutura do Cobalt
-        const res = await fetch('https://api.cobalt.tools/', {
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: url, filenameStyle: 'pretty' })
-        });
+        const data = await fetchFromCobalt({ url: url });
 
-        const data = await res.json();
-
-        if (data.status === 'error') {
-          throw new Error(data.text);
+        if (!data || data.status === 'error') {
+          throw new Error(data ? data.text : 'Erro interno da API');
         }
 
-        // Armazena a url final encontrada
-        currentMediaUrl = data.url;
-
-        // Renderiza card de informações básicas fictícias baseadas na plataforma
         mediaTypeTag.innerText = type;
-        mediaTitle.innerText = `Mídia processada com sucesso!`;
-        mediaDesc.innerText = `Link de origem pronto para download de alta performance nativo.`;
-        thumbImg.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150'; // Placeholder padrão roxo cyberpunk
-
-        // Configura botões de acordo com as regras solicitadas por você
+        thumbImg.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150';
         downloadActions.innerHTML = ''; 
 
         if (type.includes('FOTO')) {
-          // SE FOR FOTO: Apenas um botão com a qualidade máxima
           downloadActions.innerHTML = `
-            <button class="btn-neon p-3 text-xs" onclick="triggerNativeDownload('${currentMediaUrl}', 'foto')">
+            <button class="btn-neon w-full p-3 text-xs font-bold" onclick="triggerNativeDownload('${data.url}', 'foto')">
               BAIXAR NA MELHOR QUALIDADE POSSÍVEL
             </button>
           `;
         } else {
-          // SE FOR VIDEO, REELS OU TEM OPÇÃO DE SOM: Renderiza os botões organizados
           downloadActions.innerHTML = `
             <div class="grid grid-cols-3 gap-2">
-              <button class="btn-neon p-2.5 text-xs" onclick="triggerNativeDownload('${currentMediaUrl}', 'video', '1080')">MP4 FHD</button>
-              <button class="btn-neon p-2.5 text-xs" style="filter: hue-rotate(30deg);" onclick="triggerNativeDownload('${currentMediaUrl}', 'video', '720')">MP4 HD</button>
-              <button class="btn-neon p-2.5 text-xs" style="filter: hue-rotate(60deg);" onclick="triggerNativeDownload('${currentMediaUrl}', 'video', '480')">MP4 SD</button>
+              <button class="btn-neon p-2.5 text-xs font-bold" onclick="triggerNativeDownload('${data.url}', 'video', 'FHD')">MP4 FHD</button>
+              <button class="btn-neon p-2.5 text-xs font-bold" style="filter: hue-rotate(45deg);" onclick="triggerNativeDownload('${data.url}', 'video', 'HD')">MP4 HD</button>
+              <button class="btn-neon p-2.5 text-xs font-bold" style="filter: hue-rotate(90deg);" onclick="triggerNativeDownload('${data.url}', 'video', 'SD')">MP4 SD</button>
             </div>
-            <button class="btn-outline mt-1 p-2 text-xs text-center border-purple-500 text-purple-300" onclick="triggerAudioDownload('${url}')">
-              <i class="fa-solid fa-music"></i> BAIXAR APENAS O SOM / ÁUDIO
+            <button class="btn-outline mt-2 p-2.5 text-xs text-center border-purple-500 text-purple-300" onclick="triggerAudioDownload('${url}')">
+              BAIXAR APENAS ÁUDIO (MP3)
             </button>
           `;
         }
@@ -363,78 +350,70 @@
         mediaCard.style.display = 'block';
 
       } catch (err) {
-        alert('Erro ao processar o link. Verifique se o conteúdo não é privado ou deletado.');
+        console.error(err);
         statusBox.style.display = 'none';
+        alert('Erro de conexão ou link incompatível. Verifique se o conteúdo não é privado e tente novamente.');
       } finally {
         analyzeBtn.disabled = false;
       }
     }
 
-    // Processamento do download com os slides de progresso
-    async function triggerNativeDownload(downloadUrl, mediaType, resLabel = '') {
+    function triggerNativeDownload(downloadUrl, mediaType, resLabel = '') {
       progressWrap.style.display = 'block';
       progressBar.style.width = '0%';
       progressPct.textContent = '0%';
-      progressLabel.textContent = `PRONTO! BAIXANDO ${mediaType.toUpperCase()} ${resLabel ? '['+resLabel+'p]' : ''}!`;
+      progressLabel.textContent = `PRONTO! BAIXANDO ${mediaType.toUpperCase()} ${resLabel ? resLabel : ''}!`;
 
       let progress = 0;
       const interval = setInterval(() => {
-        progress += Math.random() * 12 + 5;
-        if (progress > 90) progress = 90; // Trava em 90 até terminar o fetch real
+        progress += Math.random() * 15 + 8;
+        if (progress > 95) progress = 95;
         progressBar.style.width = Math.round(progress) + '%';
         progressPct.textContent = Math.round(progress) + '%';
-      }, 150);
+      }, 100);
 
-      try {
-        // Dispara o fluxo para o navegador do Android realizar o download limpo
-        const tempLink = document.createElement('a');
-        tempLink.href = downloadUrl;
-        tempLink.setAttribute('download', `wzn_download_${Date.now()}`);
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.target = '_blank';
+      a.setAttribute('download', '');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
+      setTimeout(() => {
         clearInterval(interval);
         progressBar.style.width = '100%';
         progressPct.textContent = '100%';
-        progressLabel.textContent = '✅ CONCLUÍDO COM SUCESSO!';
-
-      } catch (e) {
-        clearInterval(interval);
-        alert('Falha ao baixar o arquivo.');
-      }
+        progressLabel.textContent = 'DOWNLOAD INICIADO';
+      }, 800);
     }
 
-    // Força a extração de áudio/som nativo se requisitado pelo botão extra
     async function triggerAudioDownload(sourceUrl) {
       progressWrap.style.display = 'block';
       progressBar.style.width = '0%';
       progressPct.textContent = '0%';
-      progressLabel.textContent = 'PRONTO! EXTRAINDO E BAIXANDO SOM...';
+      progressLabel.textContent = 'BAIXANDO ÁUDIO ';
 
       try {
-        const res = await fetch('https://api.cobalt.tools/', {
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: sourceUrl, downloadMode: 'audio', filenameStyle: 'pretty' })
-        });
-        const data = await res.json();
+        const data = await fetchFromCobalt({ url: sourceUrl, downloadMode: 'audio' });
         
-        if(data.url) {
+        if (data && data.url) {
           progressBar.style.width = '100%';
           progressPct.textContent = '100%';
+          progressLabel.textContent = 'BAIXANDO ÁUDIO';
           
-          const tempLink = document.createElement('a');
-          tempLink.href = data.url;
-          tempLink.setAttribute('download', `wzn_som_${Date.now()}.mp3`);
-          document.body.appendChild(tempLink);
-          tempLink.click();
-          document.body.removeChild(tempLink);
-          
-          progressLabel.textContent = '✅ SOM SALVO COM SUCESSO!';
+          const a = document.createElement('a');
+          a.href = data.url;
+          a.target = '_blank';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } else {
+          throw new Error();
         }
       } catch (err) {
-        alert('Não foi possível isolar o áudio desta mídia.');
+        alert('Não foi possível extrair o áudio deste link.');
+        progressWrap.style.display = 'none';
       }
     }
   </script>
