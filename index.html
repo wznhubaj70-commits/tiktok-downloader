@@ -129,37 +129,6 @@
       }
     }
 
-    async function requisição(urlFinal) {
-      const controladores = [
-        'https://co.wuk.sh/api/json',
-        'https://cobalt.wuk.sh/',
-        'https://api.cobalt.tools/'
-      ];
-
-      for (let base of controladores) {
-        try {
-          const res = await fetch(base, {
-            method: 'POST',
-            headers: { 
-              'Accept': 'application/json', 
-              'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify({ 
-              url: urlFinal,
-              vCodec: 'h264'
-            })
-          });
-          
-          if (res.ok) {
-            return await res.json();
-          }
-        } catch (e) {
-          continue;
-        }
-      }
-      throw new Error();
-    }
-
     async function processar() {
       const url = urlInput.value.trim();
       if (!url) return;
@@ -171,30 +140,45 @@
       analyzeBtn.disabled = true;
 
       try {
-        const dados = await requisição(url);
+        const res = await fetch('https://api.allinonedownloader.cc/api/v1/main/video', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ url: url })
+        });
 
-        if (!dados || dados.status === 'error') {
+        if (!res.ok) throw new Error();
+        const dados = await res.json();
+
+        if (!dados || !dados.links || dados.links.length === 0) {
           throw new Error();
         }
 
         downloadActions.innerHTML = '';
 
+        let linkVideo = dados.links.find(l => l.type === 'video' || l.extension === 'mp4');
+        let linkAudio = dados.links.find(l => l.type === 'audio' || l.extension === 'mp3');
+
+        if (!linkVideo && dados.links[0]) linkVideo = dados.links[0];
+
         if (url.includes('instagram.com/p/')) {
           downloadActions.innerHTML = `
-            <button class="btn-main rounded w-full p-3 text-xs font-bold" onclick="salvar('${dados.url}', 'arquivo')">
-              DOWNLOAD
+            <button class="btn-main rounded w-full p-3 text-xs font-bold" onclick="salvar('${linkVideo.url}')">
+              DOWNLOAD FOTO
             </button>
           `;
         } else {
           downloadActions.innerHTML = `
-            <div class="grid grid-cols-3 gap-2">
-              <button class="btn-main rounded p-2 text-xs font-bold" onclick="salvar('${dados.url}', 'video', 'FHD')">1080P</button>
-              <button class="btn-main rounded p-2 text-xs font-bold opacity-80" onclick="salvar('${dados.url}', 'video', 'HD')">720P</button>
-              <button class="btn-main rounded p-2 text-xs font-bold opacity-60" onclick="salvar('${dados.url}', 'video', 'SD')">480P</button>
+            <div class="grid grid-cols-2 gap-2">
+              <button class="btn-main rounded p-3 text-xs font-bold" onclick="salvar('${linkVideo.url}')">
+                BAIXAR VIDEO (MP4)
+              </button>
+              <button class="btn-side rounded p-3 text-xs font-bold" onclick="${linkAudio ? `salvar('${linkAudio.url}')` : `alert('Audio indisponivel para este link')`}">
+                BAIXAR AUDIO (MP3)
+              </button>
             </div>
-            <button class="btn-side rounded mt-2 p-2 text-xs font-bold" onclick="extrairAudio('${url}')">
-              BAIXAR AUDIO
-            </button>
           `;
         }
 
@@ -203,25 +187,25 @@
 
       } catch (err) {
         statusBox.classList.add('hidden');
-        alert('Erro no link ou bloqueio de rede. Tente novamente.');
-      } finally {
+        alert('Erro ao processar. Tente novamente ou use outro link.');
+      } {
         analyzeBtn.disabled = false;
       }
     }
 
-    function salvar(linkDireto, tipo, res = '') {
+    function salvar(linkDireto) {
       progressWrap.classList.remove('hidden');
       progressBar.style.width = '0%';
       progressPct.textContent = '0%';
-      progressLabel.textContent = 'Processando stream';
+      progressLabel.textContent = 'Iniciando download';
 
       let p = 0;
       const t = setInterval(() => {
-        p += Math.random() * 12 + 6;
+        p += Math.random() * 15 + 10;
         if (p > 95) p = 95;
         progressBar.style.width = Math.round(p) + '%';
         progressPct.textContent = Math.round(p) + '%';
-      }, 100);
+      }, 80);
 
       const a = document.createElement('a');
       a.href = linkDireto;
@@ -236,55 +220,7 @@
         progressBar.style.width = '100%';
         progressPct.textContent = '100%';
         progressLabel.textContent = 'Concluido';
-      }, 600);
-    }
-
-    async function extrairAudio(urlOrigem) {
-      progressWrap.classList.remove('hidden');
-      progressBar.style.width = '0%';
-      progressPct.textContent = '0%';
-      progressLabel.textContent = 'Convertendo audio';
-
-      try {
-        let deves = [
-          'https://co.wuk.sh/api/json',
-          'https://cobalt.wuk.sh/',
-          'https://api.cobalt.tools/'
-        ];
-        
-        let dadosAudio = null;
-        for (let b of deves) {
-          try {
-            const res = await fetch(b, {
-              method: 'POST',
-              headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-              body: JSON.stringify({ url: urlOrigem, downloadMode: 'audio' })
-            });
-            if (res.ok) {
-              dadosAudio = await res.json();
-              break;
-            }
-          } catch(e) {}
-        }
-
-        if (dadosAudio && dadosAudio.url) {
-          progressBar.style.width = '100%';
-          progressPct.textContent = '100%';
-          progressLabel.textContent = 'Concluido';
-          
-          const a = document.createElement('a');
-          a.href = dadosAudio.url;
-          a.target = '_blank';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        } else {
-          throw new Error();
-        }
-      } catch (err) {
-        alert('Erro ao extrair audio.');
-        progressWrap.classList.add('hidden');
-      }
+      }, 500);
     }
   </script>
 </body>
