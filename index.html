@@ -1,201 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WZN — Universal Downloader</title>
-
+  <title>wzndl</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            mono: ['"Share Tech Mono"', '"Fira Code"', 'monospace'],
-          },
-          colors: {
-            cyber: {
-              bg: '#0a0512',
-              card: '#120a21',
-              neon: '#a855f7',
-              blue: '#c084fc',
-              muted: '#3b0764',
-            }
+            mono: ['monospace'],
           }
         }
       }
     }
   </script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
-
   <style>
-    * { box-sizing: border-box; }
-
     body {
-      background-color: #0a0512;
-      background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(168,85,247,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(192,132,252,0.06) 0%, transparent 50%);
+      background-color: #06020a;
       min-height: 100vh;
-      font-family: 'Share Tech Mono', monospace;
-      color: #ebd5ff;
+      color: #e2d5f0;
+      font-family: monospace;
     }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(168,85,247,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(168,85,247,0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
+    .card-base {
+      background: #0d0714;
+      border: 1px solid #4a2074;
     }
-
-    .neon-text {
-      color: #c084fc;
-      text-shadow: 0 0 8px rgba(168,85,247,0.9), 0 0 20px rgba(168,85,247,0.5);
-    }
-
-    .card-cyber {
-      background: rgba(18,10,33,0.92);
-      border: 1px solid rgba(168,85,247,0.3);
-      box-shadow:
-        0 0 1px rgba(168,85,247,0.3),
-        0 4px 32px rgba(0,0,0,0.8),
-        inset 0 1px 0 rgba(168,85,247,0.1);
-      backdrop-filter: blur(14px);
-    }
-
-    .input-cyber {
-      background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(168,85,247,0.4);
-      color: #e9d5ff;
-      font-family: 'Share Tech Mono', monospace;
-      border-radius: 8px;
-      padding: 12px 16px;
-      width: 100%;
-      font-size: 0.875rem;
-      transition: all 0.2s ease;
+    .input-base {
+      background: #000000;
+      border: 1px solid #5c2b8e;
       outline: none;
     }
-    .input-cyber::placeholder { color: rgba(168,85,247,0.4); }
-    .input-cyber:focus {
+    .input-base:focus {
       border-color: #a855f7;
-      box-shadow: 0 0 12px rgba(168,85,247,0.6), inset 0 0 8px rgba(168,85,247,0.1);
     }
-
-    .btn-neon {
-      background: linear-gradient(135deg, #a855f7, #6366f1);
+    .btn-main {
+      background: #7c3aed;
       color: #ffffff;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-family: 'Share Tech Mono', monospace;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 12px rgba(168,85,247,0.4);
     }
-    .btn-neon:hover:not(:disabled) {
-      box-shadow: 0 0 20px rgba(168,85,247,0.8);
-      transform: translateY(-1px);
+    .btn-main:disabled {
+      opacity: 0.5;
     }
-    .btn-neon:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid rgba(168,85,247,0.4);
-      color: rgba(233,213,255,0.8);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.8rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .btn-outline:hover { border-color: #c084fc; background: rgba(168,85,247,0.15); color: #fff; }
-
-    .tag {
-      background: rgba(168,85,247,0.15);
-      border: 1px solid rgba(168,85,247,0.3);
+    .btn-side {
+      border: 1px solid #7c3aed;
       color: #c084fc;
-      font-size: 0.65rem;
-      letter-spacing: 0.06em;
-      padding: 2px 8px;
-      border-radius: 4px;
-      display: inline-block;
     }
-
-    .progress-track {
-      background: rgba(168,85,247,0.1);
-      border: 1px solid rgba(168,85,247,0.2);
-      border-radius: 9999px;
-      height: 8px;
-      overflow: hidden;
+    .barra-bg {
+      background: #1a0f26;
     }
-    .progress-bar {
-      height: 100%;
-      border-radius: 9999px;
-      background: linear-gradient(90deg, #a855f7, #6366f1);
-      box-shadow: 0 0 8px rgba(168,85,247,0.8);
+    .barra-fill {
+      background: #a855f7;
       transition: width 0.1s ease;
     }
-
-    .thumbnail {
-      border: 1px solid rgba(168,85,247,0.4);
-      box-shadow: 0 0 12px rgba(168,85,247,0.2);
-      border-radius: 8px;
-      object-fit: cover;
-      width: 90px;
-      height: 90px;
-    }
-
-    .divider { border-color: rgba(168,85,247,0.2); margin: 16px 0; }
-    .pulse-neon { animation: pulse-neon 1.4s ease-in-out infinite; }
-    @keyframes pulse-neon { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen px-4 py-12 relative z-10">
+<body class="flex flex-col items-center justify-center p-4">
 
-  <header class="text-center mb-8">
-    <div class="flex items-center justify-center gap-2 mb-3">
-      <span class="tag">V3.2 ANTI-CORS</span>
-      <span class="tag">ROXO EDITION</span>
-    </div>
-    <h1 class="neon-text text-5xl font-black tracking-tight mb-2" style="font-size: clamp(2rem, 8vw, 3.25rem);">
-      WZN<span style="color: #fff;">_</span>DL
-    </h1>
-    <p style="color: rgba(168,85,247,0.6); font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;">
-      &gt; UNIVERSAL DOWNLOADER &lt;
-    </p>
-  </header>
+  <div class="w-full max-w-md text-center mb-6">
+    <h1 class="text-3xl font-bold tracking-wider text-purple-400">WZN_DL</h1>
+  </div>
 
-  <main class="card-cyber rounded-xl w-full" style="max-width: 560px; padding: 28px;">
-
-    <div style="margin-bottom: 20px;">
-      <label class="label text-xs uppercase tracking-widest text-purple-400 block mb-2">// Insira o link da mídia</label>
-      <div style="display: flex; gap: 8px;">
-        <div style="position: relative; flex: 1;">
-          <input
-            id="url-input"
-            type="url"
-            class="input-cyber"
-            placeholder="TikTok, Instagram, YouTube..."
-            autocomplete="off"
-            spellcheck="false"
-          />
-        </div>
+  <div class="card-base rounded-lg w-full max-w-md p-6">
+    <div class="mb-4">
+      <div class="flex gap-2">
+        <input
+          id="url-input"
+          type="url"
+          class="input-base rounded p-3 flex-1 text-sm text-purple-200"
+          placeholder="Cole o link aqui"
+          autocomplete="off"
+        />
         <button 
           id="paste-btn" 
-          class="btn-outline" 
-          style="padding: 0 16px; border-color: #a855f7; color: #c084fc;"
-          onclick="pasteFromClipboard()"
+          class="btn-side rounded px-4 text-xs font-bold"
+          onclick="colarLink()"
         >
           COLAR
         </button>
@@ -204,48 +83,30 @@
 
     <button
       id="analyze-btn"
-      class="btn-neon"
-      style="width: 100%; padding: 14px; font-size: 0.9rem;"
-      onclick="analyzeUrl()"
+      class="btn-main rounded w-full p-3 text-sm font-bold tracking-wide"
+      onclick="processar()"
     >
       BAIXAR
     </button>
 
-    <div id="status-box" style="display: none; margin-top: 16px;" class="bg-[#1b0e30] border border-purple-800 rounded-lg p-4 text-center">
-      <p id="status-text" class="text-purple-300 text-sm font-medium pulse-neon">CONTACTANDO SERVIDOR DE MÍDIA...</p>
+    <div id="status-box" class="hidden mt-4 bg-black/40 border border-purple-900 rounded p-3 text-center">
+      <p id="status-text" class="text-purple-300 text-xs">Aguardando...</p>
     </div>
 
-    <div id="media-card" style="display: none; margin-top: 0;">
-      <hr class="divider" />
-
-      <div style="display: flex; gap: 14px; margin-bottom: 20px;" class="bg-black/30 p-3 rounded-lg border border-purple-950">
-        <div id="thumb-wrap" style="flex-shrink: 0;">
-          <img id="thumb" src="" alt="thumbnail" class="thumbnail" />
-        </div>
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
-          <span id="media-type-tag" class="tag w-max mb-1">DETECTADO</span>
-          <p id="media-title" class="text-purple-100 text-sm font-bold truncate">Mídia Processada</p>
-          <p id="media-desc" class="text-purple-400 text-xs mt-1 line-clamp-2">Pronto para download de alta performance nativo.</p>
-        </div>
-      </div>
-
-      <div id="progress-wrap" style="display: none; margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #c084fc; margin-bottom: 6px;">
-          <span id="progress-label">PRONTO! BAIXANDO...</span>
+    <div id="media-card" class="hidden mt-4 border-t border-purple-950 pt-4">
+      <div id="progress-wrap" class="hidden mb-4">
+        <div class="flex justify-between text-xs text-purple-400 mb-1">
+          <span id="progress-label">Baixando</span>
           <span id="progress-pct">0%</span>
         </div>
-        <div class="progress-track">
-          <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+        <div class="barra-bg w-full h-2 rounded-full overflow-hidden">
+          <div id="progress-bar" class="barra-fill h-full" style="width: 0%;"></div>
         </div>
       </div>
 
       <div id="download-actions" class="flex flex-col gap-2"></div>
     </div>
-  </main>
-
-  <footer class="mt-8 text-center" style="font-size: 0.7rem; letter-spacing: 0.08em; color: rgba(168,85,247,0.4);">
-    <p>&copy; 2026 WZNDEV &bull; ANTI-BLOCK SYSTEM</p>
-  </footer>
+  </div>
 
   <script>
     const urlInput = document.getElementById('url-input');
@@ -253,157 +114,166 @@
     const statusBox = document.getElementById('status-box');
     const statusText = document.getElementById('status-text');
     const mediaCard = document.getElementById('media-card');
-    const mediaTypeTag = document.getElementById('media-type-tag');
     const downloadActions = document.getElementById('download-actions');
     const progressWrap = document.getElementById('progress-wrap');
     const progressBar = document.getElementById('progress-bar');
     const progressPct = document.getElementById('progress-pct');
     const progressLabel = document.getElementById('progress-label');
-    const thumbImg = document.getElementById('thumb');
 
-    const apiEndpoints = [
-      'https://cobalt.wuk.sh/',
-      'https://api.cobalt.tools/'
-    ];
-
-    async function pasteFromClipboard() {
+    async function colarLink() {
       try {
         const text = await navigator.clipboard.readText();
         urlInput.value = text;
       } catch (err) {
-        alert('Por favor, cole manualmente ou dê permissão de área de transferência.');
+        alert('Erro ao acessar a area de transferencia.');
       }
     }
 
-    async function fetchFromCobalt(payload) {
-      let lastError = null;
-      
-      for (let endpoint of apiEndpoints) {
+    async function requisição(urlFinal) {
+      const controladores = [
+        'https://co.wuk.sh/api/json',
+        'https://cobalt.wuk.sh/',
+        'https://api.cobalt.tools/'
+      ];
+
+      for (let base of controladores) {
         try {
-          const res = await fetch(endpoint, {
+          const res = await fetch(base, {
             method: 'POST',
             headers: { 
               'Accept': 'application/json', 
               'Content-Type': 'application/json' 
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ 
+              url: urlFinal,
+              vCodec: 'h264'
+            })
           });
           
           if (res.ok) {
             return await res.json();
           }
-        } catch (err) {
-          lastError = err;
+        } catch (e) {
+          continue;
         }
       }
-      throw lastError || new Error('Todos os servidores estão ocupados.');
+      throw new Error();
     }
 
-    async function analyzeUrl() {
+    async function processar() {
       const url = urlInput.value.trim();
-      if (!url) { alert('Cole um link válido primeiro!'); return; }
+      if (!url) return;
 
-      mediaCard.style.display = 'none';
-      progressWrap.style.display = 'none';
-      statusBox.style.display = 'block';
+      mediaCard.classList.add('hidden');
+      progressWrap.classList.add('hidden');
+      statusBox.classList.remove('hidden');
+      statusText.innerText = 'Processando requisicao';
       analyzeBtn.disabled = true;
 
-      let type = 'MÍDIA';
-      if(url.includes('tiktok.com')) type = 'TIKTOK VIDEO/SOM';
-      if(url.includes('instagram.com/reel')) type = 'INSTAGRAM REELS';
-      if(url.includes('instagram.com/p')) type = 'INSTAGRAM FOTO/POST';
-      if(url.includes('youtube.com') || url.includes('youtu.be')) type = 'YOUTUBE VÍDEO/ÁUDIO';
-
-      statusText.innerText = `RECONHECIDO: ${type}. ENVIANDO REQUISIÇÃO PARA API`;
-
       try {
-        const data = await fetchFromCobalt({ url: url });
+        const dados = await requisição(url);
 
-        if (!data || data.status === 'error') {
-          throw new Error(data ? data.text : 'Erro interno da API');
+        if (!dados || dados.status === 'error') {
+          throw new Error();
         }
 
-        mediaTypeTag.innerText = type;
-        thumbImg.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150';
-        downloadActions.innerHTML = ''; 
+        downloadActions.innerHTML = '';
 
-        if (type.includes('FOTO')) {
+        if (url.includes('instagram.com/p/')) {
           downloadActions.innerHTML = `
-            <button class="btn-neon w-full p-3 text-xs font-bold" onclick="triggerNativeDownload('${data.url}', 'foto')">
-              BAIXAR NA MELHOR QUALIDADE POSSÍVEL
+            <button class="btn-main rounded w-full p-3 text-xs font-bold" onclick="salvar('${dados.url}', 'arquivo')">
+              DOWNLOAD
             </button>
           `;
         } else {
           downloadActions.innerHTML = `
             <div class="grid grid-cols-3 gap-2">
-              <button class="btn-neon p-2.5 text-xs font-bold" onclick="triggerNativeDownload('${data.url}', 'video', 'FHD')">MP4 FHD</button>
-              <button class="btn-neon p-2.5 text-xs font-bold" style="filter: hue-rotate(45deg);" onclick="triggerNativeDownload('${data.url}', 'video', 'HD')">MP4 HD</button>
-              <button class="btn-neon p-2.5 text-xs font-bold" style="filter: hue-rotate(90deg);" onclick="triggerNativeDownload('${data.url}', 'video', 'SD')">MP4 SD</button>
+              <button class="btn-main rounded p-2 text-xs font-bold" onclick="salvar('${dados.url}', 'video', 'FHD')">1080P</button>
+              <button class="btn-main rounded p-2 text-xs font-bold opacity-80" onclick="salvar('${dados.url}', 'video', 'HD')">720P</button>
+              <button class="btn-main rounded p-2 text-xs font-bold opacity-60" onclick="salvar('${dados.url}', 'video', 'SD')">480P</button>
             </div>
-            <button class="btn-outline mt-2 p-2.5 text-xs text-center border-purple-500 text-purple-300" onclick="triggerAudioDownload('${url}')">
-              BAIXAR APENAS ÁUDIO (MP3)
+            <button class="btn-side rounded mt-2 p-2 text-xs font-bold" onclick="extrairAudio('${url}')">
+              BAIXAR AUDIO
             </button>
           `;
         }
 
-        statusBox.style.display = 'none';
-        mediaCard.style.display = 'block';
+        statusBox.classList.add('hidden');
+        mediaCard.classList.remove('hidden');
 
       } catch (err) {
-        console.error(err);
-        statusBox.style.display = 'none';
-        alert('Erro de conexão ou link incompatível. Verifique se o conteúdo não é privado e tente novamente.');
+        statusBox.classList.add('hidden');
+        alert('Erro no link ou bloqueio de rede. Tente novamente.');
       } finally {
         analyzeBtn.disabled = false;
       }
     }
 
-    function triggerNativeDownload(downloadUrl, mediaType, resLabel = '') {
-      progressWrap.style.display = 'block';
+    function salvar(linkDireto, tipo, res = '') {
+      progressWrap.classList.remove('hidden');
       progressBar.style.width = '0%';
       progressPct.textContent = '0%';
-      progressLabel.textContent = `PRONTO! BAIXANDO ${mediaType.toUpperCase()} ${resLabel ? resLabel : ''}!`;
+      progressLabel.textContent = 'Processando stream';
 
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 15 + 8;
-        if (progress > 95) progress = 95;
-        progressBar.style.width = Math.round(progress) + '%';
-        progressPct.textContent = Math.round(progress) + '%';
+      let p = 0;
+      const t = setInterval(() => {
+        p += Math.random() * 12 + 6;
+        if (p > 95) p = 95;
+        progressBar.style.width = Math.round(p) + '%';
+        progressPct.textContent = Math.round(p) + '%';
       }, 100);
 
       const a = document.createElement('a');
-      a.href = downloadUrl;
+      a.href = linkDireto;
       a.target = '_blank';
-      a.setAttribute('download', '');
+      a.rel = 'noopener noreferrer';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
 
       setTimeout(() => {
-        clearInterval(interval);
+        clearInterval(t);
         progressBar.style.width = '100%';
         progressPct.textContent = '100%';
-        progressLabel.textContent = 'DOWNLOAD INICIADO';
-      }, 800);
+        progressLabel.textContent = 'Concluido';
+      }, 600);
     }
 
-    async function triggerAudioDownload(sourceUrl) {
-      progressWrap.style.display = 'block';
+    async function extrairAudio(urlOrigem) {
+      progressWrap.classList.remove('hidden');
       progressBar.style.width = '0%';
       progressPct.textContent = '0%';
-      progressLabel.textContent = 'BAIXANDO ÁUDIO ';
+      progressLabel.textContent = 'Convertendo audio';
 
       try {
-        const data = await fetchFromCobalt({ url: sourceUrl, downloadMode: 'audio' });
+        let deves = [
+          'https://co.wuk.sh/api/json',
+          'https://cobalt.wuk.sh/',
+          'https://api.cobalt.tools/'
+        ];
         
-        if (data && data.url) {
+        let dadosAudio = null;
+        for (let b of deves) {
+          try {
+            const res = await fetch(b, {
+              method: 'POST',
+              headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+              body: JSON.stringify({ url: urlOrigem, downloadMode: 'audio' })
+            });
+            if (res.ok) {
+              dadosAudio = await res.json();
+              break;
+            }
+          } catch(e) {}
+        }
+
+        if (dadosAudio && dadosAudio.url) {
           progressBar.style.width = '100%';
           progressPct.textContent = '100%';
-          progressLabel.textContent = 'BAIXANDO ÁUDIO';
+          progressLabel.textContent = 'Concluido';
           
           const a = document.createElement('a');
-          a.href = data.url;
+          a.href = dadosAudio.url;
           a.target = '_blank';
           document.body.appendChild(a);
           a.click();
@@ -412,8 +282,8 @@
           throw new Error();
         }
       } catch (err) {
-        alert('Não foi possível extrair o áudio deste link.');
-        progressWrap.style.display = 'none';
+        alert('Erro ao extrair audio.');
+        progressWrap.classList.add('hidden');
       }
     }
   </script>
