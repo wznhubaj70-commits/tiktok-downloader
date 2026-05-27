@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TIKTOK_DL — Download Without Watermark</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"Share Tech Mono"', '"Fira Code"', 'monospace'],
+          },
+          colors: {
+            cyber: {
+              bg: '#0d1117',
+              card: '#0d1520',
+              neon: '#00ffc8',
+              blue: '#00c8ff',
+              muted: '#2a4a45',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Share Tech Mono for the hacker vibe -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
+
+  <style>
+    /* ─── Base ─── */
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: #0d1117;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(0,255,200,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,200,255,0.04) 0%, transparent 50%);
+      min-height: 100vh;
+      font-family: 'Share Tech Mono', monospace;
+      color: #c8ffe8;
+    }
+
+    /* Grid overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Neon glow ─── */
+    .neon-text {
+      color: #00ffc8;
+      text-shadow: 0 0 8px rgba(0,255,200,0.9), 0 0 20px rgba(0,255,200,0.5);
+    }
+
+    /* ─── Card ─── */
+    .card-cyber {
+      background: rgba(13,21,32,0.92);
+      border: 1px solid rgba(0,255,200,0.2);
+      box-shadow:
+        0 0 1px rgba(0,255,200,0.3),
+        0 4px 32px rgba(0,0,0,0.7),
+        inset 0 1px 0 rgba(0,255,200,0.05);
+      backdrop-filter: blur(14px);
+    }
+
+    /* ─── Input ─── */
+    .input-cyber {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(0,255,200,0.3);
+      color: #00ffc8;
+      font-family: 'Share Tech Mono', monospace;
+      border-radius: 8px;
+      padding: 12px 44px 12px 16px;
+      width: 100%;
+      font-size: 0.875rem;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      outline: none;
+    }
+    .input-cyber::placeholder { color: rgba(0,255,200,0.3); }
+    .input-cyber:focus {
+      border-color: #00ffc8;
+      box-shadow: 0 0 12px rgba(0,255,200,0.6), 0 0 24px rgba(0,255,200,0.25), inset 0 0 8px rgba(0,255,200,0.08);
+    }
+
+    /* ─── Buttons ─── */
+    .btn-neon {
+      background: linear-gradient(135deg, #00ffc8, #00c8ff);
+      color: #0d1117;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: 'Share Tech Mono', monospace;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 12px rgba(0,255,200,0.5), 0 0 24px rgba(0,200,255,0.2);
+    }
+    .btn-neon:hover:not(:disabled) {
+      box-shadow: 0 0 20px rgba(0,255,200,0.85), 0 0 40px rgba(0,200,255,0.4);
+      transform: translateY(-1px);
+    }
+    .btn-neon:active:not(:disabled) { transform: translateY(0); }
+    .btn-neon:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(0,255,200,0.35);
+      color: rgba(0,255,200,0.7);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-outline:hover { border-color: #00ffc8; background: rgba(0,255,200,0.07); box-shadow: 0 0 10px rgba(0,255,200,0.25); color: #00ffc8; }
+    .btn-outline.active {
+      border-color: #00ffc8;
+      background: rgba(0,255,200,0.12);
+      box-shadow: 0 0 8px rgba(0,255,200,0.4);
+      color: #00ffc8;
+    }
+
+    /* ─── Tag ─── */
+    .tag {
+      background: rgba(0,255,200,0.08);
+      border: 1px solid rgba(0,255,200,0.22);
+      color: #00ffc8;
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
+      padding: 2px 8px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    /* ─── Progress ─── */
+    .progress-track {
+      background: rgba(0,255,200,0.08);
+      border: 1px solid rgba(0,255,200,0.14);
+      border-radius: 9999px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #00ffc8, #00c8ff);
+      box-shadow: 0 0 8px rgba(0,255,200,0.8), 0 0 16px rgba(0,200,255,0.4);
+      transition: width 0.1s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -40%; width: 40%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: scan 1.2s linear infinite;
+    }
+
+    /* ─── Error card ─── */
+    .error-card {
+      background: rgba(220,38,38,0.08);
+      border: 1px solid rgba(220,38,38,0.4);
+      box-shadow: 0 0 8px rgba(220,38,38,0.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    /* ─── Thumbnail ─── */
+    .thumbnail {
+      border: 1px solid rgba(0,255,200,0.3);
+      box-shadow: 0 0 12px rgba(0,255,200,0.2);
+      border-radius: 8px;
+      object-fit: cover;
+      width: 80px;
+      height: 112px;
+    }
+
+    /* ─── Animations ─── */
+    @keyframes scan {
+      0%   { left: -40%; }
+      100% { left: 100%; }
+    }
+    @keyframes flicker {
+      0%, 95%, 100% { opacity: 1; }
+      96%            { opacity: 0.75; }
+      98%            { opacity: 0.88; }
+    }
+    @keyframes pulse-neon {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.55; }
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .flicker      { animation: flicker 4s linear infinite; }
+    .pulse-neon   { animation: pulse-neon 1.4s ease-in-out infinite; }
+    .fade-slide   { animation: fadeSlideIn 0.4s ease forwards; }
+
+    /* ─── Misc ─── */
+    .label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(0,255,200,0.5);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .divider { border-color: rgba(0,255,200,0.12); margin: 16px 0; }
+    #clear-btn { display: none; }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen px-4 py-12 relative z-10">
+
+  <!-- ═══════════════════════════════
+       HEADER
+  ═══════════════════════════════ -->
+  <header class="text-center mb-10">
+    <div class="flex items-center justify-center gap-2 mb-3">
+      <span class="tag">v2.0</span>
+      <span class="tag">NO WATERMARK</span>
+      <span class="tag">HD</span>
+    </div>
+    <h1 class="neon-text flicker text-5xl font-black tracking-tight mb-2" style="font-size: clamp(2rem, 8vw, 3.25rem);">
+      TIKTOK<span style="color: rgba(255,255,255,0.6);">_</span>DL
+    </h1>
+    <p style="color: rgba(0,255,200,0.45); font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;">
+      &gt; Download without watermark &lt;
+    </p>
+  </header>
+
+  <!-- ═══════════════════════════════
+       MAIN CARD
+  ═══════════════════════════════ -->
+  <main class="card-cyber rounded-xl w-full" style="max-width: 560px; padding: 28px 28px;">
+
+    <!-- URL Input -->
+    <div style="margin-bottom: 20px;">
+      <label class="label">// TikTok URL</label>
+      <div style="position: relative;">
+        <input
+          id="url-input"
+          type="url"
+          class="input-cyber"
+          placeholder="https://www.tiktok.com/@user/video/..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          id="clear-btn"
+          onclick="clearInput()"
+          style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(0,255,200,0.5); font-size: 1.25rem; cursor: pointer; line-height: 1; padding: 0;"
+          title="Clear"
+        >×</button>
+      </div>
+    </div>
+
+    <!-- Quality selector -->
+    <div style="margin-bottom: 20px;">
+      <label class="label">// Quality</label>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button id="btn-hd" class="btn-outline active" style="padding: 10px;" onclick="setQuality('hd')">
+          HD / 60fps
+        </button>
+        <button id="btn-sd" class="btn-outline" style="padding: 10px;" onclick="setQuality('sd')">
+          SD / Standard
+        </button>
+      </div>
+    </div>
+
+    <!-- Analyze button -->
+    <button
+      id="analyze-btn"
+      class="btn-neon"
+      style="width: 100%; padding: 13px; font-size: 0.85rem;"
+      onclick="analyzeUrl()"
+    >
+      ANALYZE URL
+    </button>
+
+    <!-- Error display -->
+    <div id="error-box" style="display: none; margin-top: 16px;" class="error-card">
+      <span style="color: #f87171; font-size: 0.75rem; letter-spacing: 0.1em;">ERR&nbsp;&nbsp;</span>
+      <span id="error-msg" style="color: #f87171; font-size: 0.85rem;"></span>
+    </div>
+
+    <!-- Video info card (hidden until fetch succeeds) -->
+    <div id="video-card" style="display: none; margin-top: 0;" class="fade-slide">
+      <hr class="divider" />
+
+      <!-- Thumbnail + metadata -->
+      <div style="display: flex; gap: 14px; margin-bottom: 16px;">
+        <div id="thumb-wrap" style="flex-shrink: 0; display: none;">
+          <img id="thumb" src="" alt="thumbnail" class="thumbnail" />
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <p id="video-title" style="color: #c8ffe8; font-size: 0.82rem; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"></p>
+          <div id="video-tags" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
+        </div>
+      </div>
+
+      <!-- Progress bar (hidden until download starts) -->
+      <div id="progress-wrap" style="display: none; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: rgba(0,255,200,0.5); margin-bottom: 5px; letter-spacing: 0.08em;">
+          <span id="progress-label">DOWNLOADING...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Download button / Success message -->
+      <div id="download-section">
+        <button
+          id="download-btn"
+          class="btn-neon"
+          style="width: 100%; padding: 13px; font-size: 0.85rem;"
+          onclick="startDownload()"
+        >
+          DOWNLOAD HD MP4
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════
+       FOOTER
+  ═══════════════════════════════ -->
+  <footer class="mt-8 text-center" style="font-size: 0.7rem; letter-spacing: 0.08em;">
+    <p style="color: rgba(0,255,200,0.3);">POWERED BY TIKWM API &bull; NO WATERMARK &bull; FREE</p>
+    <p style="color: rgba(0,255,200,0.18); margin-top: 4px;">For personal use only. Respect content creators.</p>
+  </footer>
+
+  <!-- ═══════════════════════════════
+       JAVASCRIPT
+  ═══════════════════════════════ -->
+  <script>
+    // ─── State ───────────────────────────────────────────────────
+    let selectedQuality = 'hd';
+    let videoData = null;       // holds the fetched video object
+    let progressInterval = null;
+
+    // ─── DOM refs ────────────────────────────────────────────────
+    const urlInput      = document.getElementById('url-input');
+    const clearBtn      = document.getElementById('clear-btn');
+    const analyzeBtn    = document.getElementById('analyze-btn');
+    const errorBox      = document.getElementById('error-box');
+    const errorMsg      = document.getElementById('error-msg');
+    const videoCard     = document.getElementById('video-card');
+    const thumbWrap     = document.getElementById('thumb-wrap');
+    const thumbImg      = document.getElementById('thumb');
+    const videoTitle    = document.getElementById('video-title');
+    const videoTags     = document.getElementById('video-tags');
+    const progressWrap  = document.getElementById('progress-wrap');
+    const progressBar   = document.getElementById('progress-bar');
+    const progressPct   = document.getElementById('progress-pct');
+    const progressLabel = document.getElementById('progress-label');
+    const downloadBtn   = document.getElementById('download-btn');
+    const downloadSection = document.getElementById('download-section');
+
+    // ─── Helpers ─────────────────────────────────────────────────
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorBox.style.display = 'block';
+    }
+
+    function hideError() {
+      errorBox.style.display = 'none';
+    }
+
+    function setAnalyzeLoading(loading) {
+      analyzeBtn.disabled = loading;
+      analyzeBtn.innerHTML = loading
+        ? '<span class="pulse-neon">FETCHING VIDEO INFO...</span>'
+        : 'ANALYZE URL';
+    }
+
+    function formatDuration(s) {
+      const m = Math.floor(s / 60);
+      return `${m}:${String(s % 60).padStart(2, '0')}`;
+    }
+
+    function makeTags(arr) {
+      videoTags.innerHTML = '';
+      arr.forEach(text => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = text;
+        videoTags.appendChild(span);
+      });
+    }
+
+    // ─── Quality toggle ──────────────────────────────────────────
+    function setQuality(q) {
+      selectedQuality = q;
+      document.getElementById('btn-hd').classList.toggle('active', q === 'hd');
+      document.getElementById('btn-sd').classList.toggle('active', q === 'sd');
+
+      // Update download button label if video already loaded
+      if (videoData) {
+        downloadBtn.textContent = `DOWNLOAD ${q.toUpperCase()} MP4`;
+      }
+    }
+
+    // ─── Clear input ─────────────────────────────────────────────
+    function clearInput() {
+      urlInput.value = '';
+      clearBtn.style.display = 'none';
+      videoCard.style.display = 'none';
+      hideError();
+      videoData = null;
+    }
+
+    urlInput.addEventListener('input', () => {
+      clearBtn.style.display = urlInput.value ? 'block' : 'none';
+    });
+
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') analyzeUrl();
+    });
+
+    // ─── STEP 1 — Fetch video info via backend proxy ──────────────
+    async function analyzeUrl() {
+      const url = urlInput.value.trim();
+      if (!url) { showError('Please paste a TikTok URL.'); return; }
+
+      hideError();
+      videoCard.style.display = 'none';
+      videoData = null;
+      setAnalyzeLoading(true);
+
+      try {
+        const res = await fetch('/api/tiktok/fetch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url, hd: selectedQuality === 'hd' }),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok) {
+          showError(json.error || 'Failed to fetch video. Check the URL and try again.');
+          return;
+        }
+
+        videoData = json;
+        renderVideoCard(json);
+
+      } catch (err) {
+        showError('Network error — could not reach the server.');
+      } finally {
+        setAnalyzeLoading(false);
+      }
+    }
+
+    // ─── Render video card ────────────────────────────────────────
+    function renderVideoCard(data) {
+      videoTitle.textContent = data.title || 'TikTok Video';
+
+      if (data.thumbnailUrl) {
+        thumbImg.src = data.thumbnailUrl;
+        thumbWrap.style.display = 'block';
+      } else {
+        thumbWrap.style.display = 'none';
+      }
+
+      const tags = [];
+      if (data.author)   tags.push('@' + data.author);
+      if (data.duration) tags.push(formatDuration(data.duration));
+      if (data.width)    tags.push(`${data.width}×${data.height}`);
+      tags.push(selectedQuality.toUpperCase());
+      makeTags(tags);
+
+      progressWrap.style.display = 'none';
+      progressBar.style.width = '0%';
+
+      downloadSection.innerHTML = `
+        <button
+          id="download-btn"
+          class="btn-neon"
+          style="width:100%; padding:13px; font-size:0.85rem;"
+          onclick="startDownload()"
+        >DOWNLOAD ${selectedQuality.toUpperCase()} MP4</button>`;
+
+      videoCard.style.display = 'block';
+      videoCard.classList.remove('fade-slide');
+      void videoCard.offsetWidth; // reflow to restart animation
+      videoCard.classList.add('fade-slide');
+    }
+
+    // ─── STEP 2 — Download: fetch → Blob → URL.createObjectURL ───
+    async function startDownload() {
+      if (!videoData) return;
+
+      const downloadUrl = selectedQuality === 'hd'
+        ? videoData.hdVideoUrl
+        : videoData.videoUrl;
+
+      // Show progress bar
+      progressWrap.style.display = 'block';
+      progressBar.style.width = '0%';
+      progressPct.textContent = '0%';
+      progressLabel.textContent = 'DOWNLOADING...';
+
+      // Replace button with disabled state while downloading
+      downloadSection.innerHTML = `
+        <button class="btn-neon" style="width:100%; padding:13px; font-size:0.85rem; opacity:0.5; cursor:not-allowed;" disabled>
+          <span class="pulse-neon">PROCESSING...</span>
+        </button>`;
+
+      // Animate progress bar (fake progress while fetching)
+      let fake = 0;
+      if (progressInterval) clearInterval(progressInterval);
+      progressInterval = setInterval(() => {
+        fake += Math.random() * 9 + 2;
+        if (fake > 88) fake = 88;
+        const pct = Math.round(fake);
+        progressBar.style.width = pct + '%';
+        progressPct.textContent = pct + '%';
+      }, 200);
+
+      try {
+        // Fetch the video through the backend proxy
+        const response = await fetch(downloadUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        // Convert response to Blob
+        const blob = await response.blob();
+
+        // Create a local Object URL and trigger download
+        const objectUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = 'tiktok_video.mp4';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Clean up the Object URL after a brief delay
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+
+        // Finish progress bar
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        progressPct.textContent = '100%';
+        progressLabel.textContent = 'COMPLETE';
+
+        // Show success + "Download again" button
+        downloadSection.innerHTML = `
+          <div style="text-align:center; padding: 6px 0;">
+            <p class="neon-text" style="font-size:0.85rem; letter-spacing:0.15em; font-weight:bold; margin-bottom:8px;">
+              ✓ DOWNLOAD COMPLETE
+            </p>
+            <button
+              class="btn-outline"
+              style="padding: 8px 20px;"
+              onclick="resetDownload()"
+            >DOWNLOAD AGAIN</button>
+          </div>`;
+
+      } catch (err) {
+        clearInterval(progressInterval);
+        progressWrap.style.display = 'none';
+        showError('Download failed. Please try again.');
+
+        // Restore download button
+        downloadSection.innerHTML = `
+          <button
+            id="download-btn"
+            class="btn-neon"
+            style="width:100%; padding:13px; font-size:0.85rem;"
+            onclick="startDownload()"
+          >DOWNLOAD ${selectedQuality.toUpperCase()} MP4</button>`;
+      }
+    }
+
+    // ─── Reset download state ─────────────────────────────────────
+    function resetDownload() {
+      progressBar.style.width = '0%';
+      progressWrap.style.display = 'none';
+      progressLabel.textContent = 'DOWNLOADING...';
+      downloadSection.innerHTML = `
+        <button
+          id="download-btn"
+          class="btn-neon"
+          style="width:100%; padding:13px; font-size:0.85rem;"
+          onclick="startDownload()"
+        >DOWNLOAD ${selectedQuality.toUpperCase()} MP4</button>`;
+    }
+  </script>
+</body>
+</html>
