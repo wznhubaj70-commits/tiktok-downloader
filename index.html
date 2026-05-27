@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang "pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,18 +9,16 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
 
   <style>
-    /* ─── Reset & Base ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg:        #0b0814;
-      --bg2:       #100d1e;
       --neon:      #b94fff;
       --neon2:     #7c3aed;
-      --neon-dim:  rgba(185, 79, 255, 0.35);
-      --neon-glow: rgba(185, 79, 255, 0.7);
+      --neon-glow: rgba(185,79,255,0.7);
+      --neon-dim:  rgba(185,79,255,0.32);
       --text:      #e8d5ff;
-      --muted:     rgba(185, 79, 255, 0.45);
+      --muted:     rgba(185,79,255,0.45);
       --error:     #f87171;
       --success:   #a3e635;
     }
@@ -28,9 +26,8 @@
     body {
       background-color: var(--bg);
       background-image:
-        radial-gradient(ellipse at 15% 40%, rgba(124, 58, 237, 0.12) 0%, transparent 55%),
-        radial-gradient(ellipse at 85% 15%, rgba(185, 79, 255, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 60% 85%, rgba(109, 40, 217, 0.07) 0%, transparent 45%);
+        radial-gradient(ellipse at 15% 40%, rgba(124,58,237,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(185,79,255,0.08) 0%, transparent 50%);
       min-height: 100vh;
       font-family: 'Share Tech Mono', monospace;
       color: var(--text);
@@ -41,672 +38,544 @@
       padding: 40px 16px 60px;
     }
 
-    /* Grid overlay */
     body::before {
       content: '';
       position: fixed; inset: 0;
       background-image:
-        linear-gradient(rgba(185,79,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(185,79,255,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(185,79,255,0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(185,79,255,0.028) 1px, transparent 1px);
       background-size: 44px 44px;
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
     .z1 { position: relative; z-index: 1; }
 
-    /* ─── Typography ─── */
     .neon-text {
       color: var(--neon);
       text-shadow: 0 0 8px var(--neon-glow), 0 0 22px rgba(185,79,255,0.4);
     }
+
     .label {
-      display: block;
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 7px;
+      display: block; font-size: .65rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 7px;
     }
 
-    /* ─── Card ─── */
     .card {
-      background: rgba(16, 13, 30, 0.93);
-      border: 1px solid rgba(185, 79, 255, 0.22);
-      box-shadow: 0 0 1px rgba(185,79,255,0.3), 0 6px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(185,79,255,0.06);
+      background: rgba(16,13,30,.93);
+      border: 1px solid rgba(185,79,255,.22);
+      box-shadow: 0 0 1px rgba(185,79,255,.3), 0 6px 40px rgba(0,0,0,.7), inset 0 1px 0 rgba(185,79,255,.06);
       backdrop-filter: blur(16px);
       border-radius: 14px;
     }
 
-    /* ─── Input ─── */
     .inp {
-      background: rgba(0,0,0,0.55);
-      border: 1px solid rgba(185,79,255,0.28);
-      color: var(--neon);
-      font-family: inherit;
-      border-radius: 9px;
-      padding: 12px 16px;
-      width: 100%;
-      font-size: 0.85rem;
-      outline: none;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(185,79,255,.28);
+      color: var(--neon); font-family: inherit;
+      border-radius: 9px; padding: 12px 40px 12px 16px;
+      width: 100%; font-size: .85rem; outline: none;
       transition: border-color .2s, box-shadow .2s;
     }
-    .inp::placeholder { color: rgba(185,79,255,0.28); }
+    .inp::placeholder { color: rgba(185,79,255,.28); }
     .inp:focus {
       border-color: var(--neon);
-      box-shadow: 0 0 12px rgba(185,79,255,0.55), 0 0 24px rgba(185,79,255,0.22), inset 0 0 8px rgba(185,79,255,0.06);
+      box-shadow: 0 0 12px rgba(185,79,255,.55), inset 0 0 8px rgba(185,79,255,.06);
     }
 
-    /* ─── Buttons ─── */
     .btn-neon {
-      background: linear-gradient(135deg, #b94fff, #7c3aed);
-      color: #fff;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-family: inherit;
-      border: none;
-      border-radius: 9px;
-      cursor: pointer;
-      font-size: 0.85rem;
+      background: linear-gradient(135deg,#b94fff,#7c3aed);
+      color: #fff; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; font-family: inherit; border: none;
+      border-radius: 9px; cursor: pointer; font-size: .85rem;
       transition: all .2s;
-      box-shadow: 0 0 14px rgba(185,79,255,0.55), 0 0 28px rgba(124,58,237,0.25);
+      box-shadow: 0 0 14px rgba(185,79,255,.55), 0 0 28px rgba(124,58,237,.25);
     }
     .btn-neon:hover:not(:disabled) {
-      box-shadow: 0 0 22px rgba(185,79,255,0.88), 0 0 44px rgba(124,58,237,0.45);
+      box-shadow: 0 0 22px rgba(185,79,255,.88), 0 0 44px rgba(124,58,237,.45);
       transform: translateY(-1px);
     }
     .btn-neon:active:not(:disabled) { transform: translateY(0); }
-    .btn-neon:disabled { opacity: 0.38; cursor: not-allowed; }
+    .btn-neon:disabled { opacity: .38; cursor: not-allowed; }
 
     .btn-ghost {
-      background: transparent;
-      border: 1px solid rgba(185,79,255,0.32);
-      color: var(--neon);
-      font-family: inherit;
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all .18s;
-      white-space: nowrap;
+      background: transparent; border: 1px solid var(--neon-dim);
+      color: var(--neon); font-family: inherit; font-size: .72rem;
+      letter-spacing: .1em; text-transform: uppercase; border-radius: 8px;
+      cursor: pointer; transition: all .18s; white-space: nowrap;
     }
-    .btn-ghost:hover { border-color: var(--neon); background: rgba(185,79,255,0.09); box-shadow: 0 0 10px rgba(185,79,255,0.28); }
-    .btn-ghost:active { transform: scale(0.97); }
+    .btn-ghost:hover {
+      border-color: var(--neon); background: rgba(185,79,255,.09);
+      box-shadow: 0 0 10px rgba(185,79,255,.28);
+    }
 
     .btn-quality {
-      background: rgba(185,79,255,0.07);
-      border: 1px solid rgba(185,79,255,0.28);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border-radius: 9px;
-      cursor: pointer;
-      transition: all .2s;
-      padding: 11px 0;
-      width: 100%;
-      font-weight: 700;
+      background: rgba(185,79,255,.07); border: 1px solid var(--neon-dim);
+      color: var(--text); font-family: inherit; font-size: .78rem;
+      letter-spacing: .08em; text-transform: uppercase; border-radius: 9px;
+      cursor: pointer; transition: all .2s; padding: 12px 0; width: 100%; font-weight: 700;
     }
     .btn-quality:hover:not(:disabled) {
-      border-color: var(--neon);
-      background: rgba(185,79,255,0.15);
-      box-shadow: 0 0 14px rgba(185,79,255,0.35);
-      color: var(--neon);
+      border-color: var(--neon); background: rgba(185,79,255,.15);
+      box-shadow: 0 0 14px rgba(185,79,255,.35); color: var(--neon);
     }
-    .btn-quality:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-quality:disabled { opacity: .35; cursor: not-allowed; }
 
-    /* ─── Tag ─── */
     .tag {
-      background: rgba(185,79,255,0.09);
-      border: 1px solid rgba(185,79,255,0.22);
-      color: var(--neon);
-      font-size: 0.58rem;
-      letter-spacing: 0.08em;
-      padding: 2px 8px;
-      border-radius: 3px;
-      display: inline-block;
+      background: rgba(185,79,255,.09); border: 1px solid rgba(185,79,255,.22);
+      color: var(--neon); font-size: .58rem; letter-spacing: .08em;
+      padding: 2px 8px; border-radius: 3px; display: inline-block;
     }
 
-    /* ─── Progress ─── */
     .prog-track {
-      background: rgba(185,79,255,0.09);
-      border: 1px solid rgba(185,79,255,0.15);
-      border-radius: 9999px;
-      height: 7px;
-      overflow: hidden;
+      background: rgba(185,79,255,.09); border: 1px solid rgba(185,79,255,.15);
+      border-radius: 9999px; height: 7px; overflow: hidden;
     }
     .prog-bar {
-      height: 100%;
-      border-radius: 9999px;
-      background: linear-gradient(90deg, #b94fff, #7c3aed);
-      box-shadow: 0 0 8px rgba(185,79,255,0.8);
-      transition: width .12s ease;
-      position: relative; overflow: hidden;
+      height: 100%; border-radius: 9999px;
+      background: linear-gradient(90deg,#b94fff,#7c3aed);
+      box-shadow: 0 0 8px rgba(185,79,255,.8);
+      transition: width .12s ease; position: relative; overflow: hidden;
     }
     .prog-bar::after {
-      content: ''; position: absolute;
-      top: 0; left: -40%; width: 40%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      content: ''; position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
+      background: linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
       animation: scan 1.2s linear infinite;
     }
 
-    /* ─── Status slide ─── */
     .status-slide {
-      border: 1px solid rgba(185,79,255,0.2);
-      background: rgba(185,79,255,0.05);
-      border-radius: 10px;
-      padding: 16px 18px;
-      font-size: 0.8rem;
-      letter-spacing: 0.08em;
-      min-height: 54px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      border: 1px solid rgba(185,79,255,.2); background: rgba(185,79,255,.05);
+      border-radius: 10px; padding: 14px 18px; font-size: .8rem;
+      letter-spacing: .08em; display: flex; align-items: center; gap: 12px;
     }
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--neon);
-      box-shadow: 0 0 8px var(--neon);
-      flex-shrink: 0;
-      animation: pulse-dot 1s ease-in-out infinite;
+    .sdot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      background: var(--neon); box-shadow: 0 0 8px var(--neon);
+      animation: blink-dot 1s ease-in-out infinite;
     }
-    .status-dot.ok {
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
-      animation: none;
-    }
-    .status-dot.err {
-      background: var(--error);
-      box-shadow: 0 0 8px var(--error);
-      animation: none;
-    }
+    .sdot.ok  { background: var(--success); box-shadow: 0 0 8px var(--success); animation: none; }
+    .sdot.err { background: var(--error);   box-shadow: 0 0 8px var(--error);   animation: none; }
 
-    /* ─── Done banner ─── */
     .done-banner {
-      border: 1px solid rgba(163, 230, 53, 0.35);
-      background: rgba(163, 230, 53, 0.07);
-      border-radius: 10px;
-      padding: 18px 20px;
-      text-align: center;
+      border: 1px solid rgba(163,230,53,.35); background: rgba(163,230,53,.07);
+      border-radius: 10px; padding: 18px 20px; text-align: center;
     }
     .done-title {
-      color: var(--success);
-      font-size: 1.05rem;
-      letter-spacing: 0.15em;
-      font-weight: 700;
-      text-shadow: 0 0 10px rgba(163,230,53,0.7);
-      margin-bottom: 6px;
+      color: var(--success); font-size: 1.05rem; letter-spacing: .15em;
+      font-weight: 700; text-shadow: 0 0 10px rgba(163,230,53,.7); margin-bottom: 6px;
     }
 
-    /* ─── Error ─── */
     .err-box {
-      background: rgba(248,113,113,0.07);
-      border: 1px solid rgba(248,113,113,0.35);
-      border-radius: 9px;
-      padding: 13px 16px;
-      color: var(--error);
-      font-size: 0.82rem;
-      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(248,113,113,.07); border: 1px solid rgba(248,113,113,.35);
+      border-radius: 9px; padding: 13px 16px; color: var(--error);
+      font-size: .82rem; display: flex; gap: 10px; align-items: flex-start;
     }
 
-    /* ─── Thumbnail ─── */
     .thumb-img {
-      border: 1px solid rgba(185,79,255,0.3);
-      box-shadow: 0 0 14px rgba(185,79,255,0.2);
-      border-radius: 8px;
-      object-fit: cover;
-      width: 76px; height: 108px;
-      flex-shrink: 0;
+      border: 1px solid rgba(185,79,255,.3); box-shadow: 0 0 14px rgba(185,79,255,.2);
+      border-radius: 8px; object-fit: cover; width: 76px; height: 108px; flex-shrink: 0;
     }
 
-    /* ─── Divider ─── */
-    hr.div { border-color: rgba(185,79,255,0.12); margin: 18px 0; }
+    hr.div { border-color: rgba(185,79,255,.12); margin: 18px 0; }
 
-    /* ─── Animations ─── */
-    @keyframes scan { 0% { left:-40%; } 100% { left:100%; } }
+    .quality-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .quality-grid .full { grid-column: 1 / -1; max-width: 55%; margin: 0 auto; width: 100%; }
+
+    @keyframes scan { 0%{left:-40%} 100%{left:100%} }
     @keyframes flicker { 0%,94%,100%{opacity:1}95%{opacity:.72}97%{opacity:.88} }
-    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.85)} }
-    @keyframes pulse-neon { 0%,100%{opacity:1}50%{opacity:.5} }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes blink { 0%,100%{opacity:1}49%{opacity:1}50%,99%{opacity:0} }
+    @keyframes blink-dot { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)} }
+    @keyframes pulse-neon { 0%,100%{opacity:1}50%{opacity:.45} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
+    @keyframes blink-cur { 0%,49%{opacity:1}50%,100%{opacity:0} }
 
     .flicker    { animation: flicker 4.5s linear infinite; }
     .pulse-neon { animation: pulse-neon 1.3s ease-in-out infinite; }
-    .fade-up    { animation: fadeUp 0.38s ease forwards; }
-
-    .cursor::after { content:'_'; animation: blink 1s step-start infinite; }
-
-    /* ─── Responsive ─── */
-    .quality-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .quality-grid .btn-center {
-      grid-column: 1 / -1;
-      max-width: 55%;
-      margin: 0 auto;
-      width: 100%;
-    }
+    .fade-up    { animation: fadeUp .38s ease forwards; }
+    .cursor::after { content:'_'; animation: blink-cur 1s step-start infinite; }
   </style>
 </head>
 <body>
 
-  <!-- ══════════════════════════════
-       HEADER
-  ══════════════════════════════ -->
-  <header class="z1 text-center mb-9">
+  <!-- HEADER -->
+  <header class="z1 text-center" style="margin-bottom:36px;">
     <div style="display:flex;justify-content:center;gap:6px;margin-bottom:10px;">
       <span class="tag">v3.0</span>
       <span class="tag">SEM MARCA D'ÁGUA</span>
       <span class="tag">HD</span>
     </div>
-    <h1 class="neon-text flicker" style="font-size: clamp(2.1rem,9vw,3.4rem); font-weight:900; letter-spacing:-.01em;">
-      TIKTOK<span style="color:rgba(255,255,255,0.5);">_</span>DL
+    <h1 class="neon-text flicker" style="font-size:clamp(2.1rem,9vw,3.4rem);font-weight:900;letter-spacing:-.01em;">
+      TIKTOK<span style="color:rgba(255,255,255,0.45);">_</span>DL
     </h1>
-    <p style="color:var(--muted);font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;margin-top:6px;">
+    <p style="color:var(--muted);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;margin-top:6px;">
       ▸ baixar vídeos &amp; fotos sem marca d'água ◂
     </p>
   </header>
 
-  <!-- ══════════════════════════════
-       MAIN CARD
-  ══════════════════════════════ -->
-  <main class="z1 card" style="width:100%;max-width:560px;padding:26px 26px 28px;">
+  <!-- MAIN CARD -->
+  <main class="z1 card" style="width:100%;max-width:560px;padding:26px;">
 
-    <!-- URL Input row -->
-    <div style="margin-bottom:18px;">
+    <!-- URL Input -->
+    <div style="margin-bottom:16px;">
       <label class="label">// Link do TikTok</label>
       <div style="display:flex;gap:8px;">
         <div style="flex:1;position:relative;">
-          <input
-            id="url-input"
-            type="url"
-            class="inp"
-            placeholder="https://www.tiktok.com/@usuario/video/..."
-            autocomplete="off"
-            spellcheck="false"
-          />
-          <button
-            id="clear-btn"
-            onclick="clearInput()"
-            style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;padding:0;"
-          >×</button>
+          <input id="url-input" type="url" class="inp"
+            placeholder="https://www.tiktok.com/@user/video/..." autocomplete="off" spellcheck="false" />
+          <button id="clear-btn" onclick="clearInput()"
+            style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;padding:0;">×</button>
         </div>
-        <button class="btn-ghost" style="padding:0 14px;" onclick="pasteUrl()" title="Colar da área de transferência">
-          COLAR
-        </button>
+        <button class="btn-ghost" style="padding:0 14px;" onclick="pasteUrl()">COLAR</button>
       </div>
     </div>
 
-    <!-- BAIXAR button -->
-    <button
-      id="baixar-btn"
-      class="btn-neon"
-      style="width:100%;padding:14px;"
-      onclick="iniciarBaixar()"
-    >
+    <!-- BAIXAR -->
+    <button id="baixar-btn" class="btn-neon" style="width:100%;padding:14px;" onclick="iniciarBaixar()">
       BAIXAR
     </button>
 
-    <!-- ── Status slide (hidden by default) ── -->
-    <div id="status-area" style="display:none;margin-top:16px;">
+    <!-- Status slide -->
+    <div id="status-area" style="display:none;margin-top:14px;">
       <div class="status-slide">
-        <div id="status-dot" class="status-dot"></div>
+        <div id="sdot" class="sdot"></div>
         <span id="status-text" class="cursor">CONECTANDO API</span>
       </div>
     </div>
 
-    <!-- ── Error box ── -->
-    <div id="error-box" style="display:none;margin-top:14px;" class="err-box">
+    <!-- Error -->
+    <div id="error-box" style="display:none;margin-top:12px;" class="err-box">
       <span style="font-weight:700;font-size:.7rem;letter-spacing:.1em;flex-shrink:0;">ERRO</span>
       <span id="error-msg"></span>
     </div>
 
-    <!-- ── Result card ── -->
+    <!-- Result card -->
     <div id="result-card" style="display:none;">
       <hr class="div" />
 
-      <!-- Thumbnail + info -->
-      <div style="display:flex;gap:14px;margin-bottom:16px;" id="media-info">
-        <!-- filled by JS -->
-      </div>
+      <!-- Info -->
+      <div id="media-info" style="display:flex;gap:14px;margin-bottom:16px;"></div>
 
-      <!-- ── Download options ── -->
-      <div id="download-options" style="margin-top:4px;">
-        <!-- filled by JS depending on content type -->
-      </div>
+      <!-- Download options -->
+      <div id="dl-options"></div>
 
-      <!-- ── Progress area ── -->
+      <!-- Progress -->
       <div id="progress-area" style="display:none;margin-top:14px;">
         <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);margin-bottom:5px;letter-spacing:.08em;">
           <span id="prog-label">BAIXANDO...</span>
           <span id="prog-pct">0%</span>
         </div>
-        <div class="prog-track">
-          <div id="prog-bar" class="prog-bar" style="width:0%;"></div>
-        </div>
+        <div class="prog-track"><div id="prog-bar" class="prog-bar" style="width:0%"></div></div>
       </div>
 
-      <!-- ── Done banner ── -->
-      <div id="done-banner" style="display:none;margin-top:14px;" class="done-banner fade-up">
+      <!-- Done banner -->
+      <div id="done-banner" style="display:none;margin-top:14px;" class="done-banner">
         <div class="done-title">✓ PRONTO! BAIXANDO ARQUIVO!</div>
-        <div style="color:rgba(163,230,53,0.65);font-size:.72rem;letter-spacing:.1em;margin-bottom:12px;">
-          O download foi iniciado no seu dispositivo.
+        <div style="color:rgba(163,230,53,.65);font-size:.72rem;letter-spacing:.1em;margin-bottom:12px;">
+          O download foi iniciado. Verifique sua pasta de downloads.
         </div>
-        <button class="btn-ghost" style="padding:7px 20px;" onclick="resetParaNovo()">
-          ↩ BAIXAR OUTRO
-        </button>
+        <button class="btn-ghost" style="padding:7px 20px;" onclick="resetParaNovo()">↩ BAIXAR OUTRO</button>
       </div>
     </div>
 
   </main>
 
   <!-- Footer -->
-  <footer class="z1" style="margin-top:26px;text-align:center;">
-    <p style="color:rgba(185,79,255,0.28);font-size:.65rem;letter-spacing:.1em;">
+  <footer class="z1" style="margin-top:24px;text-align:center;">
+    <p style="color:rgba(185,79,255,.28);font-size:.63rem;letter-spacing:.1em;">
       POWERED BY TIKWM API &bull; SEM MARCA D'ÁGUA &bull; GRATUITO
     </p>
-    <p style="color:rgba(185,79,255,0.16);font-size:.6rem;margin-top:4px;">
+    <p style="color:rgba(185,79,255,.16);font-size:.58rem;margin-top:4px;">
       Apenas para uso pessoal. Respeite os criadores de conteúdo.
     </p>
   </footer>
 
-  <!-- ══════════════════════════════
-       JAVASCRIPT
-  ══════════════════════════════ -->
   <script>
-    // ─── Estado ──────────────────────────────────────────────────
-    let dadosVideo    = null;   // resultado do fetch
-    let baixandoAgora = false;
-    let progInterval  = null;
+    // ─── API base — chamada diretamente do browser (TikWM tem CORS aberto) ───
+    const TIKWM = 'https://www.tikwm.com/api/';
 
-    // ─── DOM refs ─────────────────────────────────────────────────
-    const urlInput      = document.getElementById('url-input');
-    const clearBtn      = document.getElementById('clear-btn');
-    const baixarBtn     = document.getElementById('baixar-btn');
-    const statusArea    = document.getElementById('status-area');
-    const statusDot     = document.getElementById('status-dot');
-    const statusText    = document.getElementById('status-text');
-    const errorBox      = document.getElementById('error-box');
-    const errorMsg      = document.getElementById('error-msg');
-    const resultCard    = document.getElementById('result-card');
-    const mediaInfo     = document.getElementById('media-info');
-    const dlOptions     = document.getElementById('download-options');
-    const progressArea  = document.getElementById('progress-area');
-    const progBar       = document.getElementById('prog-bar');
-    const progPct       = document.getElementById('prog-pct');
-    const progLabel     = document.getElementById('prog-label');
-    const doneBanner    = document.getElementById('done-banner');
+    let dados = null;
+    let baixando = false;
+    let progTimer = null;
 
-    // ─── Input: clear / mostrar X ────────────────────────────────
-    urlInput.addEventListener('input', () => {
-      clearBtn.style.display = urlInput.value ? 'block' : 'none';
+    // ─── DOM ─────────────────────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
+
+    // ─── Input helpers ───────────────────────────────────────────────────────
+    $('url-input').addEventListener('input', () => {
+      $('clear-btn').style.display = $('url-input').value ? 'block' : 'none';
     });
-    urlInput.addEventListener('keydown', e => {
+    $('url-input').addEventListener('keydown', e => {
       if (e.key === 'Enter') iniciarBaixar();
     });
 
     function clearInput() {
-      urlInput.value = '';
-      clearBtn.style.display = 'none';
-      esconderResultado();
+      $('url-input').value = '';
+      $('clear-btn').style.display = 'none';
+      resetUI();
     }
 
-    // ─── Botão COLAR ─────────────────────────────────────────────
     async function pasteUrl() {
       try {
-        const texto = await navigator.clipboard.readText();
-        urlInput.value = texto.trim();
-        clearBtn.style.display = urlInput.value ? 'block' : 'none';
-        esconderResultado();
+        const t = await navigator.clipboard.readText();
+        $('url-input').value = t.trim();
+        $('clear-btn').style.display = t.trim() ? 'block' : 'none';
+        resetUI();
       } catch {
-        // Fallback: foca o input para o usuário colar manualmente
-        urlInput.focus();
-        document.execCommand('paste');
+        $('url-input').focus();
       }
     }
 
-    // ─── Helpers visuais ─────────────────────────────────────────
-    function mostrarStatus(texto, tipo = 'loading') {
-      statusArea.style.display = 'block';
-      statusText.textContent   = texto;
-      statusDot.className      = 'status-dot' + (tipo === 'ok' ? ' ok' : tipo === 'err' ? ' err' : '');
-      // cursor piscante só no loading
-      statusText.classList.toggle('cursor', tipo === 'loading');
+    // ─── Visual helpers ───────────────────────────────────────────────────────
+    function setStatus(txt, tipo = 'loading') {
+      $('status-area').style.display = 'block';
+      $('status-text').textContent = txt;
+      $('status-text').classList.toggle('cursor', tipo === 'loading');
+      $('sdot').className = 'sdot' + (tipo === 'ok' ? ' ok' : tipo === 'err' ? ' err' : '');
     }
 
-    function esconderStatus() {
-      statusArea.style.display = 'none';
+    function showError(msg) {
+      $('error-msg').textContent = msg;
+      $('error-box').style.display = 'flex';
     }
 
-    function mostrarErro(msg) {
-      errorMsg.textContent    = msg;
-      errorBox.style.display  = 'flex';
-      statusDot.className     = 'status-dot err';
-      statusText.classList.remove('cursor');
-      statusText.textContent  = 'ERRO NA REQUISIÇÃO';
-      statusArea.style.display = 'block';
+    function hideError() { $('error-box').style.display = 'none'; }
+
+    function resetUI() {
+      hideError();
+      $('status-area').style.display = 'none';
+      $('result-card').style.display = 'none';
+      $('progress-area').style.display = 'none';
+      $('done-banner').style.display = 'none';
+      dados = null;
     }
 
-    function esconderErro() {
-      errorBox.style.display = 'none';
-    }
-
-    function esconderResultado() {
-      resultCard.style.display  = 'none';
-      progressArea.style.display = 'none';
-      doneBanner.style.display  = 'none';
-      dadosVideo = null;
-    }
-
-    function formatDur(s) {
+    function fmtDur(s) {
       return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
     }
 
-    function tipoLabel(tipo) {
-      const map = { video:'VÍDEO', photo:'FOTO', sound:'SOM' };
-      return map[tipo] || 'CONTEÚDO';
+    function tipoLabel(t) {
+      return {video:'VÍDEO', photo:'FOTO', sound:'SOM'}[t] || 'CONTEÚDO';
     }
 
-    // ─── Botão BAIXAR — inicia o fluxo ───────────────────────────
+    // ─── Botão BAIXAR ─────────────────────────────────────────────────────────
     async function iniciarBaixar() {
-      const url = urlInput.value.trim();
-      if (!url) { mostrarErro('Cole um link do TikTok para continuar.'); return; }
+      const url = $('url-input').value.trim();
+      if (!url) { showError('Cole o link do TikTok primeiro.'); return; }
 
-      // Reset visual
-      esconderErro();
-      esconderResultado();
-      baixarBtn.disabled = true;
-      baixarBtn.innerHTML = '<span class="pulse-neon">ANALISANDO...</span>';
+      resetUI();
+      $('baixar-btn').disabled = true;
+      $('baixar-btn').innerHTML = '<span class="pulse-neon">ANALISANDO...</span>';
 
-      // ── Slide 1: CONECTANDO API ──
-      mostrarStatus('CONECTANDO API');
+      // Slides de status animados
+      setStatus('CONECTANDO API');
+      await sleep(600);
+      setStatus('CONTACTANDO SERVIDOR');
+      await sleep(500);
+      setStatus('ANALISANDO LINK');
 
-      await delay(600);
-      mostrarStatus('CONTACTANDO SERVIDOR');
-
-      await delay(500);
-      mostrarStatus('ANALISANDO LINK');
-
-      // ── Chamada ao backend ──
       try {
-        const res  = await fetch('/api/tiktok/fetch', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url }),
+        // Chamada direta ao TikWM (CORS aberto com Access-Control-Allow-Origin: *)
+        const params = new URLSearchParams({ url, hd: '1' });
+        const resp   = await fetch(`${TIKWM}?${params}`, {
+          headers: { 'Accept': 'application/json' }
         });
-        const json = await res.json();
 
-        if (!res.ok) {
-          mostrarStatus('LINK NÃO SUPORTADO', 'err');
-          mostrarErro(json.error || 'Não foi possível processar esse link.');
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const json = await resp.json();
+
+        if (json.code !== 0 || !json.data) {
+          setStatus('LINK NÃO SUPORTADO', 'err');
+          showError(json.msg || 'Não foi possível processar esse link. Verifique se é público.');
           return;
         }
 
-        mostrarStatus('CONTEÚDO ENCONTRADO ✓', 'ok');
-        dadosVideo = json;
-        renderizarResultado(json);
+        setStatus('CONTEÚDO ENCONTRADO ✓', 'ok');
+        dados = processarDados(json.data);
+        renderizarCard(dados);
 
-      } catch {
-        mostrarStatus('FALHA NA CONEXÃO', 'err');
-        mostrarErro('Erro de rede. Verifique sua conexão e tente novamente.');
+      } catch (err) {
+        setStatus('FALHA NA REQUISIÇÃO', 'err');
+        // Detecta se é erro de rede/CORS ou erro da API
+        if (err instanceof TypeError && err.message.includes('fetch')) {
+          showError('Erro de rede. Verifique sua conexão com a internet.');
+        } else {
+          showError('Não foi possível buscar o vídeo. Tente outro link ou aguarde alguns segundos.');
+        }
       } finally {
-        baixarBtn.disabled = false;
-        baixarBtn.textContent = 'BAIXAR';
+        $('baixar-btn').disabled = false;
+        $('baixar-btn').textContent = 'BAIXAR';
       }
     }
 
-    // ─── Renderiza card de resultado ─────────────────────────────
-    function renderizarResultado(d) {
+    // ─── Processar resposta do TikWM ─────────────────────────────────────────
+    function processarDados(d) {
+      const hasImages = Array.isArray(d.images) && d.images.length > 0;
+      const hasVideo  = Boolean(d.play);
+      const hasAudio  = Boolean(d.music_info?.play || d.music);
+
+      let contentType = 'video';
+      if (hasImages) contentType = 'photo';
+      else if (!hasVideo && hasAudio) contentType = 'sound';
+
+      return {
+        contentType,
+        title      : (d.title || '').split('#')[0].trim() || 'TikTok Content',
+        author     : d.author?.nickname || 'Desconhecido',
+        description: d.title || '',
+        cover      : d.cover || '',
+        duration   : d.duration || 0,
+        width      : d.width  || 0,
+        height     : d.height || 0,
+        sdUrl      : d.play        || '',
+        hdUrl      : d.hdplay || d.play || '',
+        fhdUrl     : d.hdplay || d.play || '',
+        images     : hasImages ? d.images : [],
+        musicUrl   : d.music_info?.play || d.music || '',
+      };
+    }
+
+    // ─── Renderizar card de resultado ─────────────────────────────────────────
+    function renderizarCard(d) {
       // Info header
-      mediaInfo.innerHTML = `
-        ${d.thumbnailUrl ? `<img src="${d.thumbnailUrl}" class="thumb-img" alt="capa" />` : ''}
+      $('media-info').innerHTML = `
+        ${d.cover ? `<img src="${d.cover}" class="thumb-img" alt="capa" />` : ''}
         <div style="flex:1;min-width:0;">
           <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
             <span class="tag">${tipoLabel(d.contentType)}</span>
-            ${d.author   ? `<span class="tag">@${d.author}</span>`         : ''}
-            ${d.duration ? `<span class="tag">${formatDur(d.duration)}</span>` : ''}
-            ${d.width    ? `<span class="tag">${d.width}×${d.height}</span>` : ''}
+            ${d.author   ? `<span class="tag">@${d.author}</span>`             : ''}
+            ${d.duration ? `<span class="tag">${fmtDur(d.duration)}</span>`    : ''}
+            ${d.width    ? `<span class="tag">${d.width}×${d.height}</span>`   : ''}
           </div>
           <p style="font-size:.8rem;color:var(--text);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
             ${d.description || d.title || '—'}
           </p>
         </div>`;
 
-      // Botões de qualidade conforme tipo
-      dlOptions.innerHTML = '';
+      // Botões de qualidade / download
+      const opts = $('dl-options');
+      opts.innerHTML = '';
 
       if (d.contentType === 'video') {
-        dlOptions.innerHTML = `
-          <div style="margin-bottom:6px;">
-            <label class="label" style="margin-bottom:10px;">// Escolha a qualidade</label>
-            <div class="quality-grid">
-              <button class="btn-quality" onclick="baixarArquivo('${d.fhdVideoUrl}','tiktok_fhd.mp4','MP4 FHD')">
-                📺 MP4 FHD
-              </button>
-              <button class="btn-quality" onclick="baixarArquivo('${d.hdVideoUrl}','tiktok_hd.mp4','MP4 HD')">
-                🎬 MP4 HD
-              </button>
-              <div class="btn-center">
-                <button class="btn-quality" onclick="baixarArquivo('${d.sdVideoUrl}','tiktok_sd.mp4','MP4 SD')">
-                  📱 MP4 SD
-                </button>
-              </div>
+        opts.innerHTML = `
+          <label class="label" style="margin-bottom:10px;">// Escolha a qualidade</label>
+          <div class="quality-grid">
+            <button class="btn-quality" onclick="baixar('${esc(d.fhdUrl)}','tiktok_fhd.mp4','FHD')">📺 MP4 FHD</button>
+            <button class="btn-quality" onclick="baixar('${esc(d.hdUrl)}','tiktok_hd.mp4','HD')">🎬 MP4 HD</button>
+            <div class="full">
+              <button class="btn-quality" onclick="baixar('${esc(d.sdUrl)}','tiktok_sd.mp4','SD')">📱 MP4 SD</button>
             </div>
           </div>`;
 
       } else if (d.contentType === 'photo') {
-        // Fotos: baixar tudo na melhor qualidade
-        dlOptions.innerHTML = `
-          <label class="label" style="margin-bottom:10px;">
-            // ${d.images.length} foto${d.images.length > 1 ? 's' : ''} encontrada${d.images.length > 1 ? 's' : ''}
-          </label>`;
         const grid = document.createElement('div');
-        grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;';
+        grid.innerHTML = `<label class="label" style="margin-bottom:10px;">// ${d.images.length} foto${d.images.length > 1 ? 's' : ''} encontrada${d.images.length > 1 ? 's' : ''}</label>`;
+        const g = document.createElement('div');
+        g.className = 'quality-grid';
         d.images.forEach((url, i) => {
           const btn = document.createElement('button');
           btn.className = 'btn-quality';
           btn.innerHTML = `🖼️ FOTO ${i+1}`;
-          btn.onclick = () => baixarArquivo(url, `tiktok_foto_${i+1}.jpg`, `FOTO ${i+1}`);
-          grid.appendChild(btn);
+          if (d.images.length === 1) btn.style.gridColumn = '1/-1';
+          btn.onclick = () => baixar(url, `tiktok_foto_${i+1}.jpg`, `FOTO ${i+1}`);
+          g.appendChild(btn);
         });
-        // Se só 1 foto, botão full-width
-        if (d.images.length === 1) {
-          const btn = grid.querySelector('button');
-          btn.style.gridColumn = '1/-1';
-          btn.innerHTML = '🖼️ BAIXAR FOTO (MELHOR QUALIDADE)';
-        }
-        dlOptions.appendChild(grid);
+        grid.appendChild(g);
+        opts.appendChild(grid);
 
       } else if (d.contentType === 'sound') {
-        dlOptions.innerHTML = `
-          <button class="btn-quality" style="grid-column:1/-1;max-width:100%;" onclick="baixarArquivo('${d.musicUrl}','tiktok_audio.mp3','ÁUDIO')">
+        opts.innerHTML = `
+          <button class="btn-quality" style="width:100%;"
+            onclick="baixar('${esc(d.musicUrl)}','tiktok_audio.mp3','ÁUDIO')">
             🎵 BAIXAR ÁUDIO / SOM
           </button>`;
       }
 
-      progressArea.style.display = 'none';
-      doneBanner.style.display   = 'none';
-      resultCard.style.display   = 'block';
-      resultCard.classList.add('fade-up');
+      $('progress-area').style.display  = 'none';
+      $('done-banner').style.display    = 'none';
+      $('result-card').style.display    = 'block';
+      $('result-card').classList.remove('fade-up');
+      void $('result-card').offsetWidth;
+      $('result-card').classList.add('fade-up');
     }
 
-    // ─── Download: fetch → Blob → trigger ────────────────────────
-    async function baixarArquivo(downloadUrl, nomeArquivo, labelQualidade) {
-      if (baixandoAgora || !downloadUrl) return;
-      baixandoAgora = true;
+    // ─── Download: tenta fetch→Blob; fallback = abre em nova aba ─────────────
+    async function baixar(url, nome, label) {
+      if (baixando || !url) return;
+      baixando = true;
 
-      // Desabilita todos os botões de qualidade
-      dlOptions.querySelectorAll('button').forEach(b => b.disabled = true);
+      // Desabilita botões
+      $('dl-options').querySelectorAll('button').forEach(b => b.disabled = true);
 
-      doneBanner.style.display    = 'none';
-      progressArea.style.display  = 'block';
-      progBar.style.width         = '0%';
-      progPct.textContent         = '0%';
-      progLabel.textContent       = `BAIXANDO ${labelQualidade}...`;
+      $('done-banner').style.display   = 'none';
+      $('progress-area').style.display = 'block';
+      $('prog-bar').style.width        = '0%';
+      $('prog-pct').textContent        = '0%';
+      $('prog-label').textContent      = `BAIXANDO ${label}...`;
 
-      // Progresso fake durante o fetch
+      // Barra de progresso fake
       let fake = 0;
-      if (progInterval) clearInterval(progInterval);
-      progInterval = setInterval(() => {
-        fake += Math.random() * 9 + 2;
-        if (fake > 88) fake = 88;
-        const p = Math.round(fake);
-        progBar.style.width  = p + '%';
-        progPct.textContent  = p + '%';
+      if (progTimer) clearInterval(progTimer);
+      progTimer = setInterval(() => {
+        fake = Math.min(fake + Math.random() * 9 + 2, 88);
+        $('prog-bar').style.width = Math.round(fake) + '%';
+        $('prog-pct').textContent = Math.round(fake) + '%';
       }, 200);
 
+      let sucesso = false;
+
+      // Tentativa 1: fetch → Blob → createObjectURL (funciona se CDN tem CORS)
       try {
-        const res = await fetch(downloadUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        const blob = await res.blob();
+        const r = await fetch(url, { mode: 'cors' });
+        if (!r.ok) throw new Error('not ok');
+        const blob   = await r.blob();
         const objUrl = URL.createObjectURL(blob);
-
         const a = document.createElement('a');
-        a.href     = objUrl;
-        a.download = nomeArquivo;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(objUrl), 5000);
-
-        // 100% e banner de sucesso
-        clearInterval(progInterval);
-        progBar.style.width  = '100%';
-        progPct.textContent  = '100%';
-        progLabel.textContent = 'CONCLUÍDO';
-
-        doneBanner.style.display = 'block';
-        doneBanner.classList.remove('fade-up');
-        void doneBanner.offsetWidth;
-        doneBanner.classList.add('fade-up');
-
+        a.href = objUrl; a.download = nome;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(objUrl), 6000);
+        sucesso = true;
       } catch {
-        clearInterval(progInterval);
-        progressArea.style.display = 'none';
-        mostrarErro('Falha no download. Tente novamente.');
-        // Reabilita botões
-        dlOptions.querySelectorAll('button').forEach(b => b.disabled = false);
-      } finally {
-        baixandoAgora = false;
+        // Tentativa 2: link direto (browser geralmente baixa MP4 automaticamente)
+        try {
+          const a = document.createElement('a');
+          a.href = url; a.download = nome; a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          sucesso = true;
+        } catch {
+          // Tentativa 3: window.open
+          window.open(url, '_blank', 'noopener,noreferrer');
+          sucesso = true;
+        }
       }
+
+      clearInterval(progTimer);
+
+      if (sucesso) {
+        $('prog-bar').style.width  = '100%';
+        $('prog-pct').textContent  = '100%';
+        $('prog-label').textContent = 'CONCLUÍDO';
+
+        $('done-banner').style.display = 'block';
+        $('done-banner').classList.remove('fade-up');
+        void $('done-banner').offsetWidth;
+        $('done-banner').classList.add('fade-up');
+      } else {
+        $('progress-area').style.display = 'none';
+        showError('Falha ao baixar. Tente outra qualidade.');
+        $('dl-options').querySelectorAll('button').forEach(b => b.disabled = false);
+      }
+
+      baixando = false;
     }
 
-    // ─── Reset para novo link ─────────────────────────────────────
+    // ─── Reset ────────────────────────────────────────────────────────────────
     function resetParaNovo() {
       clearInput();
-      esconderStatus();
-      esconderErro();
+      $('status-area').style.display = 'none';
     }
 
-    // ─── Utilitário ───────────────────────────────────────────────
-    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+    // ─── Utils ────────────────────────────────────────────────────────────────
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function esc(s) { return (s || '').replace(/'/g, "\\'"); }
   </script>
 </body>
 </html>
